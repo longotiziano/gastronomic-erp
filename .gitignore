@@ -1,0 +1,22 @@
+# Archivos de entorno
+.env
+.venv
+venv
+
+# Database
+db-sqlite.db
+instance/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Logs
+app/logs/logs.csv
+
+# VS Code
+.vscode/

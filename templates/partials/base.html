@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Restaurante para que vengas a comer con familia, pareja o amigos.">
+    <meta name="keywords" content="Restaurante, comida, menú, contacto, inicio">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/general/nav.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/general/general.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/general/blocks.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/btns/general.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/keyframes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/general/panels.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms/forms.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    
+    <!-- Librería para mensajes de error -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- JS -->
+    <script type="module" src="{{ url_for('static', filename='js/general/nav.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/general/panels.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/forms.js') }}"></script>
+
+    <title>{% block title %} {% endblock %}</title>
+    {% block head %} {% endblock %}
+</head>
+<body>
+    {% block header %}
+    {% endblock %}
+    {% block body %}
+    {% endblock %}
+    {% block footer %}
+    {% endblock %}
+    <!-- Mensajes de error -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <script>
+                {% for category, info in messages %}
+                    var msg = JSON.parse({{ info | tojson | safe }});
+                    
+                    Swal.fire({
+                        title: msg.title,
+                        text: msg.text,
+                        icon: "{{ category | default('error') | safe }}",
+                        confirmButtonText: 'Aceptar',
+                        confirmButtonColor: '#ffffff71',
+                        background: 'rgb(43, 43, 43)',
+                        color: '#ffffff',
+                        customClass: {
+                            confirmButton: 'submit-btn',
+                            popup: 'block'
+                        }
+                    });
+                {% endfor %}
+            </script>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

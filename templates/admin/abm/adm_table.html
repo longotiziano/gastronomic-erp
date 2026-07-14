@@ -1,0 +1,94 @@
+{#
+  adm_table.html -> Tabla genérica para paneles admin (usuarios, reservas, menú).
+
+  Requiere:
+    title: str = Título del header.
+    cols: list[str] = Nombres de columna (mismo orden que row.cells).
+    rows: list[dict] = Cada fila: {"cells": [...], "data": {...}}.
+        -> cells = valores a mostrar. data = lo que va como data-* en el
+        -> botón de editar (usado por setupCrudModal en crud.js).
+    page, per_page, total_pages: ints = Para la paginación.
+
+  Opcional:
+    plus_label  str   Texto del botón "+ Agregar...". Si no se pasa, no se muestra el botón.
+
+  Columnas especiales (detectadas por nombre en cols):
+    'Estado': badge active/inactive
+    'Imagen': <img>
+    'Disponible': badge Disponible/No disponible
+#}
+<main class="admin-page">
+    <div class="admin-header">
+        <h1 class="admin-title">{{ title }}</h1>
+        {% if plus_label %}
+        <button id="add-btn" class="btn btn-primary">+ {{ plus_label }}</button>
+        {% endif %}
+    </div>
+    <table id="dishes-table" class="dishes-table">
+        <thead>
+            <tr style="pointer-events: none;">
+                {% for col in cols %}
+                <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody id="dishes-tbody">
+            {% for row in rows or [] %}
+            <tr>
+                {% for cell in row.cells %}
+                    {% set col_name = cols[loop.index0] %}
+                    {% if col_name == 'Estado' %}
+                        {% if admin_user or tables %}
+                            <td><span class="badge {{ 'badge-available' if cell == 'active' else 'badge-unavailable' }}">{{ cell }}</span></td>
+                        {% else %}
+                            {% if cell in ['Confirmed', 'Arrived'] %}
+                                {% set status_class = 'badge-available' %}
+                            {% elif cell == 'Pending' %}
+                                {% set status_class = 'badge-pending' %}
+                            {% else %}
+                                {% set status_class = 'badge-unavailable' %}
+                            {% endif %}
+                            <td><span class="badge {{ status_class }}">{{ cell }}</span></td>
+                        {% endif %}
+                    {% elif col_name == 'Imagen' %}
+                        <td>
+                            <img src="{{ cell }}" alt="" class="dish-thumb" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="dish-thumb-placeholder" style="display:none;">🍽️</div>
+                        </td>
+                    {% elif col_name == 'Disponible' %}
+                        <td>
+                            <span class="badge {{ 'badge-available' if cell else 'badge-unavailable' }}">
+                                {{ 'Disponible' if cell else 'No disponible' }}
+                            </span>
+                        </td>
+                    {% elif col_name == 'Capacidad' and tables %}
+                        <td>{{ cell }} personas</td>
+                    {% else %}
+                        <td>{{ cell }}</td>
+                    {% endif %}
+                {% endfor %}
+                <td>
+                    <button class="edit-btn btn-icon btn-edit"
+                        {% for key, value in row.data.items() %}data-{{ key }}="{{ value }}" {% endfor %}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil">
+                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                            <path d="m15 5 4 4"/>
+                        </svg>
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="?page={{ page - 1 }}&per_page={{ per_page }}">←</a>
+        {% endif %}
+
+        <span>Página {{ page }} de {{ total_pages }}</span>
+
+        {% if page < total_pages %}
+            <a href="?page={{ page + 1 }}&per_page={{ per_page }}">→</a>
+        {% endif %}
+    </div>
+</main>

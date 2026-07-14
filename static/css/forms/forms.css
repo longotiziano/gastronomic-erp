@@ -1,0 +1,62 @@
+.block.form-block {
+    min-width: 400px;
+    max-height: 85vh;
+    animation: deslizarArriba 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    overflow-y: auto;
+}
+
+input:disabled {
+    background-color: #f0f0f015;
+    color: #999999;
+    cursor: not-allowed;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: aliceblue;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group .upload,
+.form-group select {
+    padding: 10px 12px;
+    border: 1px solid #dddddd8c;
+    background: #2a2a2a;
+    color: aliceblue;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    margin: 0;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: rgb(255, 123, 0);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    width: 100%;
+}

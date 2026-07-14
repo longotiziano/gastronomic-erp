@@ -1,6 +1,6 @@
 import traceback
 from flask import Flask, jsonify
-from exceptions import (
+from utils.exceptions import (
     AppException,
     ValidationError,
     UnauthorizedError,

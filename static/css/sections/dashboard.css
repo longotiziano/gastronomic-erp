@@ -1,0 +1,56 @@
+.graphs-sidebar {
+    flex: 0.1 0 auto;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}   
+
+.area-control, .date-control, .sector-control {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+}
+
+.graphs-sidebar ul {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+}
+
+.graphs {
+    flex: 20 0 auto;
+}
+
+.graphs-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    gap: 1rem;
+}
+
+.charts {
+    flex: 1;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.chart-wrapper {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+}
+
+.chart-wrapper canvas {
+    position: absolute;
+    inset: 0;
+}
+
+/* Forzamos a que todos los hijos directos ocupen el mismo ancho base */
+.charts > div {
+    flex: 1; 
+    min-width: 0; /* Clave para que las tablas no estiren el contenedor */
+}
+

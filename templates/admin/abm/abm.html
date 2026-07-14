@@ -1,0 +1,45 @@
+{#
+  abm.html -> Layout base para páginas de administración tipo ABM (Alta/Baja/Modificación).
+
+  Pensado para extenderse desde una página concreta (admin/users.html, admin/menus.html, etc.),
+  que sobreescribe los bloques abm_form y area_js con su propio formulario modal y su propio
+  setupCrudModal(config).
+
+  Requiere (pasados al extender + render_template):
+    page_title: str = Título de la pestaña del navegador.
+    title, cols, rows, page, per_page, total_pages, plus_label (opcional)
+        -> Ver adm_table.html -> se renderiza vía include con estas variables.
+
+  Bloques a sobreescribir en la página hija:
+    abm_form   El formulario/modal específico de la entidad (ej: auth_form.html con admin_user=true).
+    area_js    El `script` de la página, con su llamada a setupCrudModal({...}).
+#}
+
+{% extends 'partials/base.html' %}
+{% block title %} {{ page_title }} {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sections/abm.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/btns/edit_btn.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/general/pagination.css') }}">
+
+<!-- JS -->
+{% block area_js %}
+{% endblock %}
+{% endblock %}
+
+{% block header %}
+{% include 'partials/nav.html' %}
+{% include 'partials/settings.html' %}
+{% endblock %}
+
+{% block body %}
+{% block abm_form %}
+{% endblock %}
+{% include 'admin/abm/adm_table.html' %}
+<div class="overlay" id="overlay"></div>
+{% endblock %}
+
+{% block footer %}
+{% include 'partials/footer.html' %}
+{% endblock %}

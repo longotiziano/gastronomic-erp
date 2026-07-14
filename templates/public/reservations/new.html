@@ -1,0 +1,40 @@
+{% extends 'partials/base.html' %}
+
+{% block title %} Reservar Mesa {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sections/reservations.css') }}">
+<script src="{{ url_for('static', filename='js/sections/reservations.js') }}" defer></script>
+{% endblock %}
+
+{% block header %}
+{% include 'partials/nav.html' %}
+{% endblock %}
+
+{% block body %}
+{% include 'partials/settings.html' %}
+<div class="overlay" id="overlay"></div>
+<main class="page-content" style="justify-content: center; align-items: flex-start; margin-top: 5.5rem;">
+        {% if tables %}
+        <div class="block tables-section">
+            <div class="block-header">
+                <h2>Mesas disponibles</h2>
+            </div>
+            <div>
+            <div class="block-content tables-grid">
+                {% for mesa in tables %}
+                <div class="table-card table-available" data-id="{{ mesa.id }}"
+                    onclick="elegirMesa(this)">
+                    <h3>Mesa {{ mesa.id }}</h3>
+                    <p>{{ mesa.capacity }} personas</p>
+                    <span class="table-status status-available">Disponible</span>
+                </div>
+                {% endfor %}
+            </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% include 'public/reservations/reservations_form.html' %}
+</main>
+{% endblock %}

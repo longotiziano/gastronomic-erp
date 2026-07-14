@@ -1,0 +1,56 @@
+<div class="{{ 'fixed-block' if abm else 'open' }}" data-openby="adminUser">
+    <div class="block form-block">
+        <div class="block-header">
+            <h2>Nuevo Plato</h2>
+        </div>
+
+        <form id="form-principal" action="{{ url_for('admin_menus.create') }}" method="POST">
+            <div class="block-content">
+
+                <div class="form-group">
+                    <label for="name">Nombre *</label>
+                    <input type="text" id="name" name="name" required placeholder="Ej: Hamburguesa clásica">
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Categoría *</label>
+                    <input type="text" id="category" name="category" required placeholder="Ej: pizza, sushi, postres" list="category-suggestions">
+                    <datalist id="category-suggestions"></datalist>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" name="description" placeholder="Descripción del plato..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Precio *</label>
+                    <input type="number" id="price" name="price" min="0.01" step="0.01" required placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="available">Disponible para usuarios</label>
+                    <input type="checkbox" id="available" name="available" checked>
+                </div>
+
+                <div class="form-group">
+                    <label for="image_url">URL de imagen</label>
+                    <input type="text" id="image_url" name="image_url" placeholder="https://...">
+                </div>
+
+            </div>
+
+            <div class="block-footer">
+                <button class="delete-btn" data-formid="eliminarUser" 
+                data-confirm-text="¿Estás seguro de que deseas desactivar este producto?" 
+                type="button" hidden>
+                    Eliminar
+                </button>
+                <button class="submit-btn cancel-btn" type="button" id="closeAdminUser">Cancelar</button>
+                <button class="submit-btn" type="submit">Guardar</button>
+            </div>
+        </form>
+
+        <form id="eliminarUser" action="" method="POST"></form>
+    </div>
+</div>

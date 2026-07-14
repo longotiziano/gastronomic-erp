@@ -1,0 +1,9 @@
+{% extends 'admin/abm/abm.html' %}
+
+{% block area_js %}
+<script type="module" src="{{ url_for('static', filename='js/abm/reservations.js') }}"></script>
+{% endblock %}
+
+{% block abm_form %}
+{% include 'public/reservations/reservations_form.html' %}
+{% endblock %}

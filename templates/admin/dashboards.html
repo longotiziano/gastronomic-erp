@@ -1,0 +1,131 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block head %}
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/dashboard.css') }}">
+
+    <!-- Librería de Chart.js y plugins-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix"></script>
+
+    <!-- JS -->
+    <!-- Datos para los gráficos -->
+    <script>
+        const data = {{ data | tojson }};
+        console.log(data)
+    </script>
+    {% if area=='reservations' %}
+        <script type="module" src="{{ url_for('static', filename='js/sections/dashboards/reservations.js') }}"></script>
+    {% endif %}
+    {% if area=='reviews' %}
+        <script type="module" src="{{ url_for('static', filename='js/sections/dashboards/reviews.js') }}"></script>
+    {% endif %}
+
+{% endblock %}
+
+{% block header %}
+    {% include 'partials/nav.html' %}
+{% endblock %}
+
+{% block body %}
+    <!-- Para el blurr y oscurecimiento de la página -->
+    <div class="overlay"></div>
+
+    <!-- Panel para actualizar usuario -->
+    {% if user %}
+        {% include 'auth/auth_form.html' %} 
+    {% endif %}
+
+    <!-- Panel de configuración -->
+    {% include 'partials/settings.html' %}
+    <div class="page-content" style="flex-direction: row;">
+        <div class="block flex-block graphs-sidebar">
+            <div class="block-header">
+                <h2>Controladores</h2>
+            </div>
+            <div class="block-content panel-list">
+                <div class="control-panel">    
+                    <h3>Control de área</h3>
+                <ul>
+                    <li><a class="{{ 'active' if area=='reservations' }}" href="{{ url_for('admin_dashboards.show', area='reservations') }}">Reservas</a></li>
+                    <li><a class="{{ 'active' if area=='reviews' }}" href="{{ url_for('admin_dashboards.show', area='reviews') }}">Reseñas</a></li>
+                </ul>
+                </div>
+                <div class="control-panel" id="graphDate">
+                    <h3>Agrupación por fechas</h3>
+                    <ul>
+                        <li><button class="active" data-graphdate="daily">Diario</button></li>
+                        <li><button data-graphdate="monthly">Mensual</button></li>
+                        <li><button data-graphdate="yearly">Anual</button></li>
+                    </ul>
+                </div>
+                <div class="control-panel">
+                    <h3>Rango de fechas</h3>
+                    <form id="graphRange" action="{{ url_for('admin_dashboards.show', area=area) }}">
+                        <ul>
+                            <li>
+                                <label for="fechaInicio">Desde</label>
+                                <input id='fechaInicio' type="date" name="inicio" value="{{ inicio }}" max="{{ hoy }}">
+                            </li>
+                            <li>
+                                <label for="fechaFinal">Hasta</label>
+                                <input id='fechaFinal' type="date" name="fin" value="{{ fin }}" max="{{ hoy }}">
+                            </li>
+                            </li><button type="submit" style="position: relative;">Filtrar</button></li>
+                        </ul>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="block flex-block graphs">
+            <div class="block-header">
+                <h2>Gráficos</h2>
+            </div>
+            <div class="graphs-content">
+                <div class="charts">
+                    <div class="chart-wrapper"><canvas id="graph1"></canvas></div>
+                    <div class="chart-wrapper"><canvas id="graph2"></canvas></div>
+                </div>
+                <div class="charts">
+                    <div class="chart-wrapper"><canvas id="graph3"></canvas></div>
+                    {% if area != 'reviews' %}
+                    <div class="chart-wrapper">
+                        <canvas id="graph4"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="block border">
+                        <div class="block-header">
+                            <h2>Reseñas recientes</h2>
+                        </div>
+                        <div class="block-content">
+                            <table id="recent-reviews-table">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Estrellas</th>
+                                        <th>Comentario</th>
+                                        <th>Fecha</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for r in data.recent %}
+                                    <tr>
+                                        <td>{{ r.name }}</td>
+                                        <td>{{ '⭐' * r.stars }}</td>
+                                        <td>{{ r.description }}</td>
+                                        <td>{{ r.created_at }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,69 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: rgb(54, 54, 54);
+    overflow-x: hidden;
+    color: aliceblue;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    background: transparent;
+    border: none;           
+    outline: none;           
+    color: aliceblue;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: aliceblue;
+}
+
+svg {
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: aliceblue;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none; /* no bloquea clicks cuando está invisible */
+  transition: opacity 0.3s ease;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}

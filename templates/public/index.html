@@ -1,0 +1,23 @@
+{% extends 'partials/base.html' %}
+{% block title %} Restaurante {% endblock %}
+
+{% block head %}
+<!-- CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+
+<!-- JS -->
+<script defer src="{{ url_for('static', filename='js/general/carousel.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/sections/home_reviews.js') }}"></script>
+{% endblock %}
+
+{% block header %}
+    {% include 'partials/nav.html' %}
+{% endblock %}
+
+{% block body %}
+    <!-- Para el blurr y oscurecimiento de la página -->
+    <div class="overlay"></div>
+    <!-- Panel para actualizar usuario -->
+    {% include 'partials/settings.html' %}
+{% endblock %}
