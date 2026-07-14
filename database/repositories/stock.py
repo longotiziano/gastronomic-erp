@@ -1,23 +1,25 @@
 from database import db
 from database.repositories.base import BaseRepository
-from database.models.recipe import Recipe
+from database.models.stock import Stock, StockMovement, MovementType
 
 
-class RecipeRepository(BaseRepository[Recipe]):
-    model = Recipe
+class StockRepository(BaseRepository[Stock]):
+    model = Stock
 
-    def get_by_product(self, product_id: int) -> list[Recipe]:
-        """Return all ingredients (raw materials) for a given product."""
-        return db.session.query(Recipe).filter_by(product_id=product_id).all()
+    def get_by_raw_material(self, raw_material_id: int) -> Stock | None:
+        return db.session.query(Stock).filter_by(raw_material_id=raw_material_id).first()
 
-    def get_by_raw_material(self, raw_material_id: int) -> list[Recipe]:
-        """Return all recipes that use a given raw material."""
-        return db.session.query(Recipe).filter_by(raw_material_id=raw_material_id).all()
 
-    def get_ingredient(self, product_id: int, raw_material_id: int) -> Recipe | None:
-        """Return the specific recipe row for a product + raw material pair."""
+class StockMovementRepository(BaseRepository[StockMovement]):
+    model = StockMovement
+
+    def get_by_raw_material(self, raw_material_id: int) -> list[StockMovement]:
         return (
-            db.session.query(Recipe)
-            .filter_by(product_id=product_id, raw_material_id=raw_material_id)
-            .first()
+            db.session.query(StockMovement)
+            .filter_by(raw_material_id=raw_material_id)
+            .order_by(StockMovement.created_at.desc())
+            .all()
         )
+
+    def get_by_type(self, movement_type: MovementType) -> list[StockMovement]:
+        return db.session.query(StockMovement).filter_by(type=movement_type).all()

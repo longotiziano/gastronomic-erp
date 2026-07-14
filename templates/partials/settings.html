@@ -1,18 +1,15 @@
 <div class="panel" data-openby="configBtn">
     <div class="block-header">
-        <h2>Configuración</h2>
+        <h2>Paneles ABM</h2>
     </div>
     <div class="block-content">
         <ul class="panel-list">
-            {% if user and not admin_user %}
-            <li><button id="adminUser">Administrar usuario</button></li>
-            {% endif %}
             {% if user and user.get('category') in ('admin', 'root') %}
-            <li><a href="">Panel de Menús</a></li>
-            <li><a href="">Panel de Usuarios</a></li>
-            <li><a href="">Panel de Reservas</a></li>
-            <li><a href="">Panel de Mesas</a></li>
-            <li><a href="">Panel de Servicios Extras</a></li>
+            <li><a href="">Materias primas</a></li>
+            <li><a href="">Ventas</a></li>
+            <li><a href="">Productos</a></li>
+            <li><a href="">Empleados</a></li>
+            <li><a href="">Gastos</a></li>
             {% endif %}
             {% if user %}
             <li><a href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
