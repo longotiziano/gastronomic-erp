@@ -10,7 +10,7 @@ class Bar(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
     # Relationships
-    employees = db.relationship("Employee", back_populates="bar", lazy="dynamic")
+    employees = db.relationship("User", back_populates="bar", lazy="dynamic")
     products = db.relationship("Product", back_populates="bar", lazy="dynamic")
     sales = db.relationship("Sale", back_populates="bar", lazy="dynamic")
     arqueos = db.relationship("Arqueo", back_populates="bar", lazy="dynamic")

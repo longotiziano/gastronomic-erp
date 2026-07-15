@@ -1,5 +1,4 @@
 from .users import UserRepository
-from .employee import EmployeeRepository
 from .products import ProductRepository, ProductCategoryRepository
 from .sales import SaleRepository
 from .payrolls import PayrollRepository
@@ -11,7 +10,6 @@ from .stock import StockRepository, StockMovementRepository
 
 __all__ = [
     "UserRepository",
-    "EmployeeRepository",
     "ProductRepository",
     "ProductCategoryRepository",
     "SaleRepository",

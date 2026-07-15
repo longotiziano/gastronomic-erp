@@ -2,8 +2,7 @@ from app import create_app
 from database import db
 import database.models  # noqa: F401 - register all models
 from database.models.bar import Bar
-from database.models.user import User
-from database.models.employee import Employee, EmployeeRole
+from database.models.user import User, UserRole
 from database.models.product import ProductCategory, Product, ProductSector
 from database.models.raw_material import RawMaterialCategory, RawMaterial
 from database.models.recipe import Recipe
@@ -29,27 +28,31 @@ def seed_data():
         # Bar
         bar = get_or_create(Bar, name="La Cocina Central")
 
-        # User + employee
+        # User/employee unified account
         user = get_or_create(
             User,
-            defaults={"name": "Admin Demo", "password": "hashed-password-demo"},
+            defaults={
+                "name": "Admin Demo",
+                "password": "hashed-password-demo",
+                "rol": UserRole.administrator,
+                "address": "Av. Siempre Viva 123",
+                "daily_salary": 1500.0,
+                "bar_id": bar.id,
+            },
             email="admin@example.com",
         )
         if not user.name:
             user.name = "Admin Demo"
         if not user.password:
             user.password = "hashed-password-demo"
-
-        employee = db.session.query(Employee).filter_by(user_id=user.id).first()
-        if not employee:
-            employee = Employee(
-                user_id=user.id,
-                address="Av. Siempre Viva 123",
-                rol=EmployeeRole.administrator,
-                daily_salary=1500.0,
-                bar_id=bar.id,
-            )
-            db.session.add(employee)
+        if user.rol is None:
+            user.rol = UserRole.administrator
+        if user.bar_id is None:
+            user.bar_id = bar.id
+        if not user.address:
+            user.address = "Av. Siempre Viva 123"
+        if user.daily_salary == 0.0:
+            user.daily_salary = 1500.0
 
         # Product categories
         category_food = get_or_create(

@@ -14,15 +14,15 @@ class Arqueo(db.Model):
     total_invitations = db.Column(db.Float, nullable=False, default=0.0)
     total_expenses = db.Column(db.Float, nullable=False, default=0.0)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
-    cashier_id = db.Column(db.Integer, db.ForeignKey("employees.id"), nullable=False)
-    manager_id = db.Column(db.Integer, db.ForeignKey("employees.id"), nullable=False)
+    cashier_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    manager_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=False)
     detail = db.Column(db.Text, nullable=True)
     arqueo_url = db.Column(db.String(500), nullable=True)   # URL or path to the generated PDF
 
     # Relationships
-    cashier = db.relationship("Employee", foreign_keys=[cashier_id], back_populates="arqueos_as_cashier")
-    manager = db.relationship("Employee", foreign_keys=[manager_id], back_populates="arqueos_as_manager")
+    cashier = db.relationship("User", foreign_keys=[cashier_id], back_populates="arqueos_as_cashier")
+    manager = db.relationship("User", foreign_keys=[manager_id], back_populates="arqueos_as_manager")
     bar = db.relationship("Bar", back_populates="arqueos")
 
     def __repr__(self):

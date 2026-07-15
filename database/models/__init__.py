@@ -1,6 +1,5 @@
 from .bar import Bar
 from .user import User
-from .employee import Employee
 from .product import ProductCategory, Product
 from .sale import Sale
 from .payroll import Payroll
@@ -13,7 +12,6 @@ from .stock import Stock, StockMovement
 __all__ = [
     "Bar",
     "User",
-    "Employee",
     "ProductCategory",
     "Product",
     "Sale",

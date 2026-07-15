@@ -1,31 +1,57 @@
-from database.repositories.employee import EmployeeRepository
+from werkzeug.security import generate_password_hash
+
+from database.models.user import User, UserRole
 from database.repositories.users import UserRepository
-from services.base import BaseService
+from seeds.users import validate_email, validate_password, verify_password_match
+from utils.exceptions import ConflictError
+from utils.helpers import clean_string
 
 
-class UserService(BaseService):
-    def __init__(self):
-        super().__init__(UserRepository(), check_existence="email")
-
-    def get_active_by_email(self, email: str):
-        return self.repository.get_active_by_email(email)
-    
-    def verify_credentials(self, email: str, password: str):
-        return self.repository.verify_credentials(email, password)
+def hash_password(password: str) -> str:
+    """Hashea una contraseña usando Werkzeug."""
+    return generate_password_hash(password)
 
 
-class EmployeeService(BaseService):
-    def __init__(self):
-        super().__init__(EmployeeRepository(), check_existence="user_id")
+def create_user(
+    name: str,
+    email: str,
+    password: str,
+    role: UserRole | str = UserRole.waiter,
+    bar_id: int | None = None,
+    address: str | None = None,
+    daily_salary: float = 0.0,
+) -> User:
+    user_repo = UserRepository()
+    email = clean_string(email)
+    name = clean_string(name, title=True)
+    if user_repo.get_by_email(email):
+        raise ConflictError("El email ya se encuentra registrado.")
 
-    def get_by_bar(self, bar_id: int, active_only: bool = True):
-        return self.repository.get_by_bar(bar_id, active_only=active_only)
+    validate_email(email)
+    validate_password(password)
 
-    def get_by_role(self, rol, bar_id: int | None = None):
-        return self.repository.get_by_role(rol, bar_id=bar_id)
+    if isinstance(role, str):
+        role = UserRole[role] if role in UserRole.__members__ else UserRole.waiter
 
-    def get_by_user(self, user_id: int):
-        return self.repository.get_by_user(user_id)
+    hashed_password = hash_password(password)
+    user = user_repo.create(
+        name=name,
+        email=email,
+        password=hashed_password,
+        rol=role,
+        bar_id=bar_id,
+        address=address,
+        daily_salary=daily_salary,
+    )
+    return user
 
-    def fire(self, id: int):
-        return self.repository.fire(id)
+
+def login_user(email: str, password: str) -> User:
+    user_repo = UserRepository()
+    email = clean_string(email)
+    user = user_repo.get_active_by_email(email)
+    if not user:
+        raise ConflictError("Usuario no encontrado o inactivo.")
+
+    verify_password_match(password, user.password)
+    return user

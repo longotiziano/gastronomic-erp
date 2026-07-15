@@ -3,3 +3,4 @@ Flask-JWT-Extended
 SQLAlchemy
 Flask-SQLAlchemy
 Werkzeug
+python-dotenv
