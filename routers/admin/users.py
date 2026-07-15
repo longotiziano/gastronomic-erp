@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, redirect, render_template, request, session
 
 from database.models.user import User
 from services.users import login_user
 from utils.auth_decorator import admin_required
-from services.users import obtain_users
+from services.users import obtain_users, create_user
+from utils.exceptions import ValidationError
 
 users_bp = Blueprint("users", __name__, )
 
@@ -43,15 +44,26 @@ def render_users():
         pagination=pagination
     )
 
-@users_bp.get("/auth/signup")
+@users_bp.post("/users")
 @admin_required
-def signup():
-    return render_template("auth/signup.html")
+def create():
+    name = request.form.get("name", type=str)
+    email = request.form.get("email", type=str)
+    password = request.form.get("password", type=str)
+    rol = request.form.get("rol", type=str, default="waiter")
+    daily_salary = request.form.get("daily_salary", type=float, default=0.0)
+    address = request.form.get("address", type=str)
+    bar = request.form.get("bar_id", type=int)
+    if not name or not email or not password or not bar:
+        raise ValidationError("Nombre, email, contraseña y bar son requeridos")
+
+    user = create_user(name, email, password, rol, bar, address, daily_salary)
+    return redirect("auth/signup.html")
 
 @users_bp.post("/auth/login")
 def login_post():
-    email = request.form.get("email")
-    password = request.form.get("password")
+    email = request.form.get("email", type=str)
+    password = request.form.get("password", type=str)
     if not email or not password:
         return render_template("auth/login.html", error="Email y contraseña son requeridos")
     

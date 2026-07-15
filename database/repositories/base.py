@@ -1,5 +1,8 @@
+from sqlalchemy.exc import IntegrityError
 from typing import Generic, TypeVar, Type, Optional
 from database import db
+
+from utils.exceptions import ConflictError
 
 T = TypeVar("T")
 
@@ -68,12 +71,16 @@ class BaseRepository(Generic[T]):
         """
         Instantiate, persist, and return a new record.
 
-        Example:
-            user = repo.create(name="Juan", email="juan@mail.com")
+        Raises:
+            ConflictError: if a unique/foreign key constraint is violated.
         """
         instance = self.model(**kwargs)
         db.session.add(instance)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            raise ConflictError("El registro ya existe o viola una restricción.") from e
         db.session.refresh(instance)
         return instance
 

@@ -1,6 +1,8 @@
 import traceback
-from flask import Flask, flash, redirect, request, url_for
+from flask import Flask, redirect, request, url_for
+
 from utils.exceptions import AppException
+from utils.flashes import flash_message
 
 # ANSI color codes for console output
 _RESET  = "\033[0m"
@@ -41,11 +43,11 @@ def register_error_handlers(app: Flask) -> None:
     @app.errorhandler(AppException)
     def handle_app_exception(e: AppException):
         _log(app, e)
-        flash(e.message, "danger")
+        flash_message("Error", e.message)
         return redirect(request.referrer or url_for("main.index"))
 
     @app.errorhandler(Exception)
     def handle_unexpected(e: Exception):
         app.logger.exception("%s%s[500] Unhandled exception — %s%s", _BOLD, _RED, e, _RESET)
-        flash("Ocurrió un error inesperado.", "danger")
+        flash_message("Error", "Ocurrió un error inesperado.")
         return redirect(request.referrer or url_for("main.index"))
