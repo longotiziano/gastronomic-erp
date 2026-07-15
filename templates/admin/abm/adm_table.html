@@ -38,32 +38,18 @@
                 {% for cell in row.cells %}
                     {% set col_name = cols[loop.index0] %}
                     {% if col_name == 'Estado' %}
-                        {% if admin_user or tables %}
-                            <td><span class="badge {{ 'badge-available' if cell == 'active' else 'badge-unavailable' }}">{{ cell }}</span></td>
-                        {% else %}
-                            {% if cell in ['Confirmed', 'Arrived'] %}
-                                {% set status_class = 'badge-available' %}
-                            {% elif cell == 'Pending' %}
-                                {% set status_class = 'badge-pending' %}
+                        <td>
+                            {% if cell %}
+                                <span class="badge badge-available">Activo</span>
                             {% else %}
-                                {% set status_class = 'badge-unavailable' %}
+                                <span class="badge badge-unavailable">Inactivo</span>
                             {% endif %}
-                            <td><span class="badge {{ status_class }}">{{ cell }}</span></td>
-                        {% endif %}
+                        </td>
                     {% elif col_name == 'Imagen' %}
                         <td>
                             <img src="{{ cell }}" alt="" class="dish-thumb" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="dish-thumb-placeholder" style="display:none;">🍽️</div>
                         </td>
-                    {% elif col_name == 'Disponible' %}
-                        <td>
-                            <span class="badge {{ 'badge-available' if cell else 'badge-unavailable' }}">
-                                {{ 'Disponible' if cell else 'No disponible' }}
-                            </span>
-                        </td>
-                    {% elif col_name == 'Capacidad' and tables %}
-                        <td>{{ cell }} personas</td>
-                    {% else %}
                         <td>{{ cell }}</td>
                     {% endif %}
                 {% endfor %}
@@ -81,14 +67,14 @@
         </tbody>
     </table>
     <div class="pagination">
-        {% if page > 1 %}
-            <a href="?page={{ page - 1 }}&per_page={{ per_page }}">←</a>
+        {% if pagination.has_prev %}
+            <a href="?page={{ pagination.page - 1 }}&per_page={{ pagination.per_page }}">←</a>
         {% endif %}
 
-        <span>Página {{ page }} de {{ total_pages }}</span>
+        <span>Página {{ pagination.page }} de {{ pagination.pages }}</span>
 
-        {% if page < total_pages %}
-            <a href="?page={{ page + 1 }}&per_page={{ per_page }}">→</a>
+        {% if pagination.has_next %}
+            <a href="?page={{ pagination.page + 1 }}&per_page={{ pagination.per_page }}">→</a>
         {% endif %}
     </div>
 </main>

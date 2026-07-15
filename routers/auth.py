@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, session
 
-from services.users import login_user, create_user
+from services.users import login_user
 
 auth_bp = Blueprint("auth", __name__, )
 
@@ -24,20 +24,7 @@ def login_post():
     session["user_id"] = user.id
     return render_template("index.html")
 
-@auth_bp.post("/auth/signup")
-def signup_post():
-    email = request.form.get("email")
-    password = request.form.get("password")
-    if not email or not password:
-        return render_template("auth/signup.html", error="Email y contraseña son requeridos")
-    
-    user = create_user(name=request.form.get("name"), email=email, password=password)
-    session["user_role"] = user.rol.value if user.rol else None
-    session["user_id"] = user.id
-    return render_template("index.html")
-
 @auth_bp.post("/auth/logout")
 def logout():
-    # Implement logout logic here (e.g., clearing session, tokens, etc.)
     session.clear()
     return render_template("index.html")

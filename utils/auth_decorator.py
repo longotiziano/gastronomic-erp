@@ -1,45 +1,35 @@
 from functools import wraps
-from flask import jsonify
-from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+
+from flask import jsonify, session
+
 from database.models.user import UserRole
 from database.repositories.users import UserRepository
-
+from utils.exceptions import ForbiddenError, UnauthorizedError, NotFoundError
 
 def admin_required(f):
     """
-    Decorator that validates:
-      1. A valid JWT exists in the session cookie.
-      2. The user linked to that JWT is active and has the 'administrator' role.
-
-    Usage:
-        @app.route("/admin/dashboard")
-        @admin_required
-        def dashboard():
-            ...
+    Decorator that validates a Flask session plus administrator privileges.
     """
+
     @wraps(f)
     def wrapper(*args, **kwargs):
-        # 1. Verify JWT presence and signature (raises exception if invalid/missing)
-        try:
-            verify_jwt_in_request(locations=["cookies"])
-        except Exception:
-            return jsonify({"error": "Authentication required."}), 401
+        user_id = session.get("user_id")
+        if not user_id:
+            raise UnauthorizedError()
 
-        # 2. Get user_id from token payload
-        user_id = get_jwt_identity()
-
-        # 3. Look up the unified user record linked to that ID
         repo = UserRepository()
         user = repo.get_by_id(user_id)
 
         if user is None:
-            return jsonify({"error": "No user record found."}), 403
+            session.clear()
+            raise NotFoundError("No se han encontrado usuarios activos con este ID. Por favor, contacte al administrador del sistema.")
 
         if not user.is_active():
-            return jsonify({"error": "This user is no longer active."}), 403
+            session.clear()
+            raise ForbiddenError("Tu cuenta se encuentra desactivada. Por favor, contacta al administrador del sistema.")
 
         if user.rol != UserRole.administrator:
-            return jsonify({"error": "Administrator access required."}), 403
+            raise ForbiddenError()
 
         return f(*args, **kwargs)
 

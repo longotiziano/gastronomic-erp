@@ -1,4 +1,6 @@
+from flask_sqlalchemy.pagination import Pagination
 from werkzeug.security import generate_password_hash
+from flask import request
 
 from database.models.user import User, UserRole
 from database.repositories.users import UserRepository
@@ -6,11 +8,11 @@ from seeds.users import validate_email, validate_password, verify_password_match
 from utils.exceptions import ConflictError
 from utils.helpers import clean_string
 
-
-def hash_password(password: str) -> str:
-    """Hashea una contraseña usando Werkzeug."""
-    return generate_password_hash(password)
-
+def obtain_users() -> Pagination:
+    user_repo = UserRepository()
+    page = request.args.get("page", 1, type=int)
+    pagination = user_repo.paginate(page=page, per_page=20, active_only=False)
+    return pagination
 
 def create_user(
     name: str,
@@ -33,7 +35,7 @@ def create_user(
     if isinstance(role, str):
         role = UserRole[role] if role in UserRole.__members__ else UserRole.waiter
 
-    hashed_password = hash_password(password)
+    hashed_password = generate_password_hash(password)
     user = user_repo.create(
         name=name,
         email=email,
@@ -44,7 +46,6 @@ def create_user(
         daily_salary=daily_salary,
     )
     return user
-
 
 def login_user(email: str, password: str) -> User:
     user_repo = UserRepository()

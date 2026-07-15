@@ -1,7 +1,6 @@
 import os
 
 from flask import Flask
-from flask_jwt_extended import JWTManager
 from database import db
 import database.models  # noqa: F401 — registers all models with SQLAlchemy
 from utils.error_handlers import register_error_handlers
@@ -13,7 +12,6 @@ def create_app(config_object="config.Config"):
 
     # Extensions
     db.init_app(app)
-    JWTManager(app)
 
     # Error handlers
     register_error_handlers(app)
@@ -31,7 +29,9 @@ def create_app(config_object="config.Config"):
 
     from routers.main import main_bp
     app.register_blueprint(main_bp)
-    
+    from routers.auth import auth_bp
+    app.register_blueprint(auth_bp)
+
     return app
 
 if __name__ == "__main__":

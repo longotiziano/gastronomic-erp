@@ -1,14 +1,6 @@
 import traceback
-from flask import Flask, jsonify
-from utils.exceptions import (
-    AppException,
-    ValidationError,
-    UnauthorizedError,
-    ForbiddenError,
-    NotFoundError,
-    ConflictError,
-    InternalError,
-)
+from flask import Flask, flash, redirect, request, url_for
+from utils.exceptions import AppException
 
 # ANSI color codes for console output
 _RESET  = "\033[0m"
@@ -45,52 +37,15 @@ def _log(app: Flask, e: AppException) -> None:
 
 
 def register_error_handlers(app: Flask) -> None:
-    """
-    Register all custom exception handlers on the Flask app.
-    Call this inside create_app() after initializing extensions.
-
-    Usage in app.py:
-        from errors import register_error_handlers
-        register_error_handlers(app)
-    """
 
     @app.errorhandler(AppException)
     def handle_app_exception(e: AppException):
         _log(app, e)
-        return jsonify(e.to_dict()), e.status_code
+        flash(e.message, "danger")
+        return redirect(request.referrer or url_for("main.index"))
 
-    @app.errorhandler(ValidationError)
-    def handle_validation(e: ValidationError):
-        _log(app, e)
-        return jsonify(e.to_dict()), e.status_code
-
-    @app.errorhandler(UnauthorizedError)
-    def handle_unauthorized(e: UnauthorizedError):
-        _log(app, e)
-        return jsonify(e.to_dict()), e.status_code
-
-    @app.errorhandler(ForbiddenError)
-    def handle_forbidden(e: ForbiddenError):
-        _log(app, e)
-        return jsonify(e.to_dict()), e.status_code
-
-    @app.errorhandler(NotFoundError)
-    def handle_not_found(e: NotFoundError):
-        _log(app, e)
-        return jsonify(e.to_dict()), e.status_code
-
-    @app.errorhandler(ConflictError)
-    def handle_conflict(e: ConflictError):
-        _log(app, e)
-        return jsonify(e.to_dict()), e.status_code
-
-    @app.errorhandler(InternalError)
-    def handle_internal(e: InternalError):
-        _log(app, e)
-        return jsonify(e.to_dict()), e.status_code
-
-    # Catch-all for unhandled Python exceptions in production
     @app.errorhandler(Exception)
     def handle_unexpected(e: Exception):
         app.logger.exception("%s%s[500] Unhandled exception — %s%s", _BOLD, _RED, e, _RESET)
-        return jsonify({"error": "An unexpected error occurred."}), 500
+        flash("Ocurrió un error inesperado.", "danger")
+        return redirect(request.referrer or url_for("main.index"))
