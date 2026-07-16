@@ -23,10 +23,10 @@ const fillForm = (fields, data, idKey, form, deleteForm, createUrl, updateUrlBas
 };
 
 export const setupCrudModal = (fields, createUrl, updateUrlBase, toggleUrlBase, idKey = 'id') => {
-    const modal = document.querySelector('[data-openby="adminUser"]');
+    const modal = document.querySelector('[data-openby="formOpener"]');
     const overlay = document.querySelector('.overlay');
     const form = document.getElementById('form-principal');
-    const deleteForm = document.getElementById('eliminarUser');
+    const deleteForm = document.getElementById('formDelete');
     const addBtn = document.getElementById('add-btn');
     const submitBtn = document.querySelector('.submit-btn[type="submit"]');
     const deleteBtn = document.querySelector('.delete-btn');
@@ -57,6 +57,6 @@ export const setupCrudModal = (fields, createUrl, updateUrlBase, toggleUrlBase, 
         openModal();
     });
 
-    document.getElementById('closeAdminUser')?.addEventListener('click', closeModal);
+    document.getElementById('closeAdmin')?.addEventListener('click', closeModal);
     overlay.addEventListener('click', closeModal);
 };

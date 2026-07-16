@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, session
+from flask import Blueprint, redirect, render_template, request, session, jsonify
 
 from database.models.user import User
 from services.users import login_user
@@ -54,23 +54,24 @@ def create():
     daily_salary = request.form.get("daily_salary", type=float, default=0.0)
     address = request.form.get("address", type=str)
     bar = request.form.get("bar_id", type=int)
+
     if not name or not email or not password or not bar:
-        raise ValidationError("Nombre, email, contraseña y bar son requeridos")
+        raise ValidationError("Nombre, email, contraseña y bar son requeridos.")
 
     user = create_user(name, email, password, rol, bar, address, daily_salary)
-    return redirect("auth/signup.html")
+    return jsonify(user.id), 201
 
-@users_bp.post("/auth/login")
-def login_post():
-    email = request.form.get("email", type=str)
-    password = request.form.get("password", type=str)
-    if not email or not password:
-        return render_template("auth/login.html", error="Email y contraseña son requeridos")
-    
-    user = login_user(email, password)
-    session["user_role"] = user.rol.value if user.rol else None
-    session["user_id"] = user.id
-    return render_template("index.html")
+@users_bp.put("/users/<int:user_id>")
+def update_user(user_id: int):
+    updates = {
+        "name": request.form.get("name", type=str),
+        "email": request.form.get("email", type=str),
+        "password": request.form.get("password", type=str),
+        "rol": request.form.get("rol", type=str),
+        "daily_salary": request.form.get("daily_salary", type=float),
+        "address": request.form.get("address", type=str),
+        "bar_id": request.form.get("bar_id", type=int)
+    }
 
 @users_bp.post("/auth/logout")
 def logout():

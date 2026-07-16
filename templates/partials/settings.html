@@ -4,14 +4,15 @@
     </div>
     <div class="block-content">
         <ul class="panel-list">
-            {% if user and user.get('category') in ('admin', 'root') %}
+            {% if is_admin %}
+            <li><a href="{{ url_for('users.render_users') }}">Usuarios</a></li>
             <li><a href="">Materias primas</a></li>
             <li><a href="">Ventas</a></li>
             <li><a href="">Productos</a></li>
             <li><a href="">Empleados</a></li>
             <li><a href="">Gastos</a></li>
             {% endif %}
-            {% if user %}
+            {% if is_logged %}
             <li><a href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
             {% endif %}
         </ul>

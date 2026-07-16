@@ -33,7 +33,10 @@ def create_user(
     validate_password(password)
 
     if isinstance(role, str):
-        role = UserRole[role] if role in UserRole.__members__ else UserRole.waiter
+        if role not in UserRole.__members__:
+            raise ConflictError(f"Rol inválido: {role}")
+        else:
+            role = UserRole[role]
 
     hashed_password = generate_password_hash(password)
     user = user_repo.create(
@@ -45,6 +48,9 @@ def create_user(
         address=address,
         daily_salary=daily_salary,
     )
+    if not user:
+        raise ConflictError("No se pudo crear el usuario.")
+
     return user
 
 def login_user(email: str, password: str) -> User:

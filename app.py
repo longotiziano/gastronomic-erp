@@ -3,12 +3,16 @@ import os
 from flask import Flask
 from database import db
 import database.models  # noqa: F401 — registers all models with SQLAlchemy
+from seed_data import load_initial_data
 from utils.error_handlers import register_error_handlers
-
 
 def create_app(config_object="config.Config"):
     app = Flask(__name__)
     app.config.from_object(config_object)
+
+    # CSRF protection
+    from flask_wtf.csrf import CSRFProtect
+    csrf = CSRFProtect(app)
 
     # Extensions
     db.init_app(app)
@@ -26,11 +30,17 @@ def create_app(config_object="config.Config"):
         if os.getenv("RESET_DB") == "1" or app.debug:
             db.drop_all()
         db.create_all()
+        try:
+            load_initial_data()
+        except Exception as e:
+            print(f"Error loading initial data: {e}")
 
     from routers.main import main_bp
     app.register_blueprint(main_bp)
     from routers.auth import auth_bp
     app.register_blueprint(auth_bp)
+    from routers.admin.users import users_bp
+    app.register_blueprint(users_bp)
 
     return app
 

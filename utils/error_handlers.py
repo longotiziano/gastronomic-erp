@@ -1,5 +1,5 @@
 import traceback
-from flask import Flask, redirect, request, url_for
+from flask import Flask, app, jsonify, redirect, render_template, request, url_for
 
 from utils.exceptions import AppException
 from utils.flashes import flash_message
@@ -39,7 +39,10 @@ def _log(app: Flask, e: AppException) -> None:
 
 
 def register_error_handlers(app: Flask) -> None:
-
+    @app.errorhandler(404)
+    def handle_404(e):
+        return jsonify(str(e)), 404  # o jsonify, sin redirect
+    
     @app.errorhandler(AppException)
     def handle_app_exception(e: AppException):
         _log(app, e)

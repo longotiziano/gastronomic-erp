@@ -7,6 +7,7 @@ class Bar(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    address = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
     # Relationships
@@ -16,4 +17,4 @@ class Bar(db.Model):
     arqueos = db.relationship("Arqueo", back_populates="bar", lazy="dynamic")
 
     def __repr__(self):
-        return f"<Bar id={self.id} name={self.name!r}>"
+        return f"<Bar id={self.id} name={self.name!r} address={self.address!r}>"

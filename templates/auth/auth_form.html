@@ -1,130 +1,48 @@
-{#
-  auth_form.html — Formulario reutilizable de usuario
+{% extends 'partials/general_form.html' %}
 
-  Parámetros:
-    login       bool  Modo inicio de sesión.
-    signup      bool  Modo registro.
-    admin_user  bool  Modo panel administrador (modal).
-    update_user bool  Modo actualizar usuario propio (modal). Default implícito.
-    user        obj   Precarga email y nombre.
-#}
+{% block form_content %}
 
-{% set login = login if login is defined else false %}
-{% set signup = signup if signup is defined else false %}
-{% set admin_user = admin_user if admin_user is defined else false %}
-{% set update_user = true if not login and not signup and not admin_user else false %}
-
-{% set is_modal = admin_user or update_user %}
-{% set is_public = login or signup %}
-
-{% if is_public %}
-<img src="{{ url_for('static', filename='img/blurry-img.JPG') }}" class="background-image">
+{% if name_field %}
+<div class="form-group">
+    <label for="username">Nombre de usuario:</label>
+    <input type="text" id="username" name="name">
+</div>
 {% endif %}
 
-<div class="fixed-block {% if is_public %}open{% endif %}" {% if is_modal %}data-openby="adminUser"{% endif %}>
-    <div class="block form-block">
-        <div class="block-header">
-            <h2>
-                {% if login %}Iniciar sesión
-                {% elif signup %}¡Bienvenido!
-                {% elif admin_user %}Actualizar usuario
-                {% else %}Actualizar usuario
-                {% endif %}
-            </h2>
-            {% if is_public %}
-            <a href="{{ url_for('main.index') }}" class="x-btn-link">
-                <svg class="x-btn" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 6 6 18"/>
-                    <path d="m6 6 12 12"/>
-                </svg>
-            </a>
-            {% endif %}
-        </div>
-
-        <form id="form-principal" action="
-            {%- if login %}{{ url_for('auth.login') }}
-            {%- elif signup %}{{ url_for('auth.signup') }}
-            {%- else %}{{ url_for('public_users.update_user') }}
-            {%- endif %}" method="POST">
-
-            <div class="block-content">
-
-                {% if signup or update_user or admin_user %}
-                <div class="form-group">
-                    <label for="username">Nombre de usuario:</label>
-                    <input type="text" id="username" name="name"
-                        {% if user and update_user %}value="{{ user.name }}"{% endif %}
-                        {% if update_user or admin_user %}required{% endif %}>
-                </div>
-                {% endif %}
-
-                <div class="form-group">
-                    <label for="email">Correo electrónico:</label>
-                    <input type="email" id="email" name="email"
-                        {% if user and update_user %}value="{{ user.email }}"{% endif %}
-                        {% if update_user %}disabled{% endif %}
-                        {% if login or signup %}required{% endif %}>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">{% if update_user or admin_user %}Nueva {% endif %}Contraseña:</label>
-                    <input type="password" id="password" name="password"
-                        {% if login or signup %}required{% endif %}>
-                </div>
-
-                {% if signup or update_user or admin_user %}
-                <div class="form-group">
-                    <label for="confirm_password">Confirmar contraseña:</label>
-                    <input type="password" id="confirm_password" name="confirm_password"
-                        {% if signup %}required{% endif %}>
-                </div>
-                {% endif %}
-
-                {% if admin_user %}
-                <div class="form-group">
-                    <label for="category">Categoría:</label>
-                    <select id="category" name="category" required>
-                        <option value="normal">Normal</option>
-                        <option value="client">Cliente</option>
-                        <option value="employee">Empleado</option>
-                        <option value="admin">Administrador</option>
-                        <option value="root">Raíz</option>
-                        <option value="system">Sistema</option>
-                    </select>
-                </div>
-                {% endif %}
-
-            </div>
-
-            <div class="block-footer">
-                {% if update_user or admin_user %}
-                <button class="delete-btn" 
-                    data-formid="eliminarUser" 
-                    data-confirm-text="¿Estás seguro de que deseas {{ 'desactivar' if admin_user else 'eliminar' }} este usuario?"
-                    {{ 'data-admin=true ' if admin_user else "" }}
-                    type="button">
-                    {% if admin_user %}    
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-power-icon lucide-power"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/></svg>
-                    {% else %}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    {% endif %}
-                </button>
-                <button class="submit-btn cancel-btn" type="button" id="closeAdminUser">Cancelar</button>
-                {% endif %}
-
-                <button class="submit-btn" type="submit">
-                    {% if login %}Iniciar sesión
-                    {% elif signup %}Registrarse
-                    {% else %}Actualizar usuario
-                    {% endif %}
-                </button>
-            </div>
-        </form>
-    </div>
+<div class="form-group">
+    <label for="email">Correo electrónico:</label>
+    <input type="email" id="email" name="email"
+        {% if user and update_user %}value="{{ user.email }}"{% endif %}
+        {% if update_user %}disabled{% endif %}
+        {% if login or signup %}required{% endif %}>
 </div>
 
-{% if update_user or admin_user %}
-<form id="eliminarUser" 
-action="{{ url_for('public_users.delete_user') }}" method="POST">
-</form>
+<div class="form-group">
+    <label for="password">{% if update_user or admin_user %}Nueva {% endif %}Contraseña:</label>
+    <input type="password" id="password" name="password"
+        {% if login or signup %}required{% endif %}>
+</div>
+
+{% if signup or update_user or admin_user %}
+<div class="form-group">
+    <label for="confirm_password">Confirmar contraseña:</label>
+    <input type="password" id="confirm_password" name="confirm_password"
+        {% if signup %}required{% endif %}>
+</div>
 {% endif %}
+
+{% if admin_user %}
+<div class="form-group">
+    <label for="category">Categoría:</label>
+    <select id="category" name="category" required>
+        <option value="normal">Normal</option>
+        <option value="client">Cliente</option>
+        <option value="employee">Empleado</option>
+        <option value="admin">Administrador</option>
+        <option value="root">Raíz</option>
+        <option value="system">Sistema</option>
+    </select>
+</div>
+{% endif %}
+
+{% endblock %}

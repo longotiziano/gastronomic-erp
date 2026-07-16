@@ -7,6 +7,7 @@ from .arqueo import ArqueoRepository
 from .raw_materials import RawMaterialRepository, RawMaterialCategoryRepository
 from .recipes import RecipeRepository
 from .stock import StockRepository, StockMovementRepository
+from .bars import BarRepository
 
 __all__ = [
     "UserRepository",
@@ -21,4 +22,5 @@ __all__ = [
     "RecipeRepository",
     "StockRepository",
     "StockMovementRepository",
+    "BarRepository",
 ]

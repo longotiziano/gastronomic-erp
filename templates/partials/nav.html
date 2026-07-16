@@ -1,17 +1,13 @@
 <nav class="navbar">
     <a class="logo-link" href="{{ url_for('main.index') }}">
-        <img src="{{ url_for('static', filename='img/nav-logo.png') }}" alt="Logo">
+        <h2>Soy el title pa</h2>
     </a>
     <ul>
         <li><a href="">Ventas</a></li>
         <li><a href="">Servicios Extra</a></li>
         <li><a href="">Reservar</a></li>
-        {% if not user %}
-        <li><a href="">Iniciar sesión</a></li>
-        <li><a href="">Registrarse</a></li>
-        {% endif %}
-        {% if user.category == 'admin' %}
-        <li><a href="">Gráficos</a></li>
+        {% if not is_logged %}
+        <li><a href="{{ url_for('auth.login') }}">Iniciar sesión</a></li>
         {% endif %}
         <button class="config-btn" id="configBtn">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
