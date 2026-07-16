@@ -52,5 +52,5 @@ def register_error_handlers(app: Flask) -> None:
     @app.errorhandler(Exception)
     def handle_unexpected(e: Exception):
         app.logger.exception("%s%s[500] Unhandled exception — %s%s", _BOLD, _RED, e, _RESET)
-        flash_message("Error", "Ocurrió un error inesperado.")
+        flash_message("Ocurrió un error inesperado", str(e))
         return redirect(request.referrer or url_for("main.index"))

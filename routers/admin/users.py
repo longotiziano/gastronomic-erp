@@ -1,10 +1,11 @@
-from flask import Blueprint, url_for, render_template, request, session, jsonify
+from flask import Blueprint, redirect, url_for, render_template, request, session, jsonify
 
 from database.models.user import User
-from services.users import login_user
 from utils.auth_decorator import admin_required
-from services.users import obtain_users, create_user
+from services.users import alt_user_status, obtain_users, create_user
+from services.bars import obtain_bars
 from utils.exceptions import ValidationError
+from utils.helpers import format_date
 
 users_bp = Blueprint("users", __name__, )
 
@@ -12,13 +13,14 @@ users_bp = Blueprint("users", __name__, )
 @admin_required
 def render_users():
     pagination = obtain_users()
+    bars = obtain_bars()
     users: list[User] = pagination.items
     print(users)
     cols = ['ID', 'Nombre', 'Email', 'Dirección', 'Rol', 'Salario diario', 'Bar', 'Fecha de creación', 'Estado']
     rows = [
         {
             "cells": [u.id, u.name, u.email, u.address, u.rol.value, 
-                    u.daily_salary, u.bar.name, u.created_at, u.record_status],
+                    u.daily_salary, u.bar.name, format_date(u.created_at), u.record_status],
             "data": {
                 "id": u.id,
                 "name": u.name,
@@ -28,7 +30,7 @@ def render_users():
                 "leave_at": u.leave_at,
                 "daily_salary": u.daily_salary,
                 "bar_id": u.bar.name,
-                "created_at": u.created_at,
+                "created_at": format_date(u.created_at),
                 "record_status": u.record_status
             }
         }
@@ -45,7 +47,9 @@ def render_users():
 
         form_title="Administrar usuario",
         is_modal=True,
+        abm_mode=True,
         form_action=url_for('users.update', user_id=0),
+        bars=bars
     )
 
 @users_bp.post("/users/create")
@@ -78,8 +82,9 @@ def update(user_id: int):
         "bar_id": request.form.get("bar_id", type=int)
     }
 
-@users_bp.post("/users/delete/<int:user_id>")
+@users_bp.post("/users/alt_status/<int:user_id>")
 @admin_required
-def delete(user_id: int):
+def alt_status(user_id: int):
+    user = alt_user_status(user_id)
     session.clear()
-    return render_template("index.html")
+    return redirect(url_for("main.index"))

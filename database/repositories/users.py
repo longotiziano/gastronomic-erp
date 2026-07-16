@@ -8,6 +8,9 @@ from database.repositories.base import BaseRepository
 class UserRepository(BaseRepository[User]):
     model = User
 
+    def user_id_exists(self, user_id: int) -> bool:
+        return db.session.query(User).filter_by(id=user_id).exists() is not None
+
     def get_by_email(self, email: str) -> Optional[User]:
         return db.session.query(User).filter_by(email=email).first()
 

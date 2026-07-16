@@ -3,6 +3,10 @@ from database.repositories.bars import BarRepository
 from utils.exceptions import ConflictError
 from utils.helpers import clean_string
 
+def obtain_bars() -> list[Bar]:
+    bar_repo = BarRepository()
+    return bar_repo.get_all()
+
 def create_bar(name: str, address: str) -> Bar:
     bar_repo = BarRepository()
     name = clean_string(name, title=True)

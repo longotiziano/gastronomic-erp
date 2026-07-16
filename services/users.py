@@ -53,6 +53,19 @@ def create_user(
 
     return user
 
+def alt_user_status(user_id: int) -> User:
+    user_repo = UserRepository()
+    user = user_repo.get_by_id(user_id)
+    if not user:
+        raise ConflictError("Usuario no encontrado.")
+
+    user.record_status = not user.record_status
+    updated_user = user_repo.update(user_id, record_status=user.record_status)
+    if not updated_user:
+        raise ConflictError("No se pudo actualizar el estado del usuario.")
+
+    return updated_user
+
 def login_user(email: str, password: str) -> User:
     user_repo = UserRepository()
     email = clean_string(email)
