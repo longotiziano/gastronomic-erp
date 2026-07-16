@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, session, jsonify
+from flask import Blueprint, url_for, render_template, request, session, jsonify
 
 from database.models.user import User
 from services.users import login_user
@@ -13,25 +13,26 @@ users_bp = Blueprint("users", __name__, )
 def render_users():
     pagination = obtain_users()
     users: list[User] = pagination.items
+    print(users)
     cols = ['ID', 'Nombre', 'Email', 'Dirección', 'Rol', 'Salario diario', 'Bar', 'Fecha de creación', 'Estado']
     rows = [
-    {
-        "cells": [u.id, u.name, u.email, u.address, u.rol, 
-                  u.leave_at, u.daily_salary, u.bar.name, u.created_at, u.record_status],
-        "data": {
-            "id": u.id,
-            "name": u.name,
-            "email": u.email,
-            "address": u.address,
-            "rol": u.rol,
-            "leave_at": u.leave_at,
-            "daily_salary": u.daily_salary,
-            "bar_id": u.bar.name,
-            "created_at": u.created_at,
-            "record_status": u.record_status
+        {
+            "cells": [u.id, u.name, u.email, u.address, u.rol.value, 
+                    u.daily_salary, u.bar.name, u.created_at, u.record_status],
+            "data": {
+                "id": u.id,
+                "name": u.name,
+                "email": u.email,
+                "address": u.address,
+                "rol": u.rol.value,
+                "leave_at": u.leave_at,
+                "daily_salary": u.daily_salary,
+                "bar_id": u.bar.name,
+                "created_at": u.created_at,
+                "record_status": u.record_status
+            }
         }
-    }
-    for u in users
+        for u in users
     ]
 
     return render_template('admin/abm/users.html',
@@ -40,11 +41,14 @@ def render_users():
         page_title="Administrar usuarios",
         title="Usuarios",
         plus_label="Agregar usuario",
-        admin_user=True,
-        pagination=pagination
+        pagination=pagination,
+
+        form_title="Administrar usuario",
+        is_modal=True,
+        form_action=url_for('users.update', user_id=0),
     )
 
-@users_bp.post("/users")
+@users_bp.post("/users/create")
 @admin_required
 def create():
     name = request.form.get("name", type=str)
@@ -61,8 +65,9 @@ def create():
     user = create_user(name, email, password, rol, bar, address, daily_salary)
     return jsonify(user.id), 201
 
-@users_bp.put("/users/<int:user_id>")
-def update_user(user_id: int):
+@users_bp.post("/users/update/<int:user_id>")
+@admin_required
+def update(user_id: int):
     updates = {
         "name": request.form.get("name", type=str),
         "email": request.form.get("email", type=str),
@@ -73,7 +78,8 @@ def update_user(user_id: int):
         "bar_id": request.form.get("bar_id", type=int)
     }
 
-@users_bp.post("/auth/logout")
-def logout():
+@users_bp.post("/users/delete/<int:user_id>")
+@admin_required
+def delete(user_id: int):
     session.clear()
     return render_template("index.html")

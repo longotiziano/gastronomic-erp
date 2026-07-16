@@ -36,7 +36,7 @@ def logout():
 
 def _login_context():
     return {
-        "title": "Iniciar sesión",
+        "form_title": "Iniciar sesión",
         "form_action": url_for('auth.login_post'),
         "submit_text": "Iniciar sesión",
         "is_modal": False

@@ -45,12 +45,8 @@
                                 <span class="badge badge-unavailable">Inactivo</span>
                             {% endif %}
                         </td>
-                    {% elif col_name == 'Imagen' %}
-                        <td>
-                            <img src="{{ cell }}" alt="" class="dish-thumb" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="dish-thumb-placeholder" style="display:none;">🍽️</div>
-                        </td>
-                        <td>{{ cell }}</td>
+                    {% else %}
+                    <td>{{ cell }}</td>
                     {% endif %}
                 {% endfor %}
                 <td>
