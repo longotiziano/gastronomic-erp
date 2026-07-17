@@ -2,6 +2,12 @@ from database.models.bar import Bar
 from database.repositories.bars import BarRepository
 from utils.exceptions import NotFoundError, ValidationError
 
+
+def validate_bar_name(name: str):
+    if not isinstance(name, str) or not name.strip():
+        raise ValidationError("El nombre del bar es requerido.")
+
+
 def validate_bar_id(bar_id: int):
     bar_repo = BarRepository()
     if not isinstance(bar_id, int):

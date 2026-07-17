@@ -62,6 +62,7 @@
             {% endfor %}
         </tbody>
     </table>
+    {% if pagination %}
     <div class="pagination">
         {% if pagination.has_prev %}
             <a href="?page={{ pagination.page - 1 }}&per_page={{ pagination.per_page }}">←</a>
@@ -73,4 +74,5 @@
             <a href="?page={{ pagination.page + 1 }}&per_page={{ pagination.per_page }}">→</a>
         {% endif %}
     </div>
+    {% endif %}
 </main>

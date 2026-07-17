@@ -41,6 +41,8 @@ def create_app(config_object="config.Config"):
     app.register_blueprint(auth_bp)
     from routers.admin.users import users_bp
     app.register_blueprint(users_bp)
+    from routers.admin.bars import bars_bp
+    app.register_blueprint(bars_bp)
 
     return app
 

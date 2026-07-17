@@ -20,7 +20,7 @@ def render_users():
     cols = ['ID', 'Nombre', 'Email', 'Dirección', 'Rol', 'Salario diario', 'Bar', 'Fecha de creación', 'Estado']
     rows = [
         {
-            "cells": [u.id, u.name, u.email, u.address, u.rol.value, 
+            "cells": [u.id, u.name, u.email, u.address or "-", u.rol.value, 
                     u.daily_salary, u.bar.name, format_date(u.created_at), u.record_status],
             "data": {
                 "id": u.id,
@@ -72,7 +72,7 @@ def create():
 
     create_user(name, email, password, bar, rol, address, daily_salary)
     flash_message("Usuario creado correctamente.", category="success")
-    return redirect(url_for("users.render_users", is_admin=is_admin()))
+    return redirect(url_for("users.render_users"))
 
 @users_bp.post("/users/update/<int:user_id>")
 @admin_required
@@ -88,11 +88,11 @@ def update(user_id: int):
     }
     update_user(user_id, updates)
     flash_message("Usuario actualizado correctamente.", category="success")
-    return redirect(url_for("users.render_users", is_admin=is_admin()))
+    return redirect(url_for("users.render_users"))
 
 @users_bp.post("/users/alt_status/<int:user_id>")
 @admin_required
 def alt_status(user_id: int):
     alt_user_status(user_id)
     flash_message("Estado del usuario actualizado correctamente.", category="success")
-    return redirect(url_for("users.render_users", is_admin=is_admin()))
+    return redirect(url_for("users.render_users"))
