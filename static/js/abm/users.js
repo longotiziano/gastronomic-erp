@@ -4,11 +4,15 @@ import { setupCrudModal } from './crud.js'
 const fields = {
     username: 'name',
     email: 'email',
-    category: 'category'
+    address: 'address',
+    rol: 'rol',
+    leave_at: 'leave_at',
+    daily_salary: 'daily_salary',
+    bar_id: 'bar_id',
 };
 
-const createUrl = '/admin/users/create';
-const updateUrlBase = '/admin/users/update';
-const toggleUrlBase = '/admin/users/toggle_status';
+const createUrl = '/users/create';
+const updateUrlBase = '/users/update';
+const toggleUrlBase = '/users/alt_status';
 
 setupCrudModal(fields, createUrl, updateUrlBase, toggleUrlBase);

@@ -6,7 +6,7 @@
         <li><a href="">Ventas</a></li>
         <li><a href="">Servicios Extra</a></li>
         <li><a href="">Reservar</a></li>
-        {% if not is_logged %}
+        {% if not (is_logged or is_admin) %}
         <li><a href="{{ url_for('auth.login') }}">Iniciar sesión</a></li>
         {% endif %}
         <button class="config-btn" id="configBtn">

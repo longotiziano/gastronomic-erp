@@ -8,3 +8,6 @@ class BarRepository(BaseRepository[Bar]):
 
     def get_by_name(self, name: str) -> Bar | None:
         return db.session.query(Bar).filter_by(name=name).first()
+
+    def bar_id_exists(self, bar_id: int) -> bool:
+        return db.session.query(Bar).filter_by(id=bar_id).exists() is not None

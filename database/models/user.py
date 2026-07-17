@@ -14,10 +14,6 @@ class UserRole(enum.Enum):
     dishes = "dishes"
     manager = "manager"
 
-
-EmployeeRole = UserRole
-
-
 class User(db.Model):
     __tablename__ = "users"
 

@@ -8,3 +8,8 @@ def format_date(date_obj: date) -> str:
     if date_obj is None:
         return "N/A"
     return date_obj.strftime("%d-%m-%Y")
+
+def is_admin() -> bool:
+    from flask import session
+    return session.get("user_role") == "administrator"
+    

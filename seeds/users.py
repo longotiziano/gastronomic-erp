@@ -1,7 +1,8 @@
 import re
 from werkzeug.security import check_password_hash
 
-from utils.exceptions import ValidationError
+from database.models.user import UserRole
+from utils.exceptions import ConflictError, ValidationError
 
 def verify_password_match(password: str, hashed_password: str):
     """Verifica una contraseña contra su hash. Lanza ValidationError si no coincide."""
@@ -20,3 +21,7 @@ def validate_password(password: str, min_length: int = 8):
         raise ValidationError("La contraseña es requerida")
     if len(password.strip()) < min_length:
         raise ValidationError(f"La contraseña debe tener mínimo {min_length} caracteres")
+
+def validate_daily_salary(daily_salary: float):
+    if daily_salary < 0:
+        raise ConflictError("El salario diario no puede ser negativo.")
