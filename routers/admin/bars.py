@@ -53,7 +53,7 @@ def create():
     if not name:
         raise ValidationError("El nombre del bar es requerido.")
 
-    create_bar(name=name, address=address)
+    create_bar(name=name, address=address) # type: ignore
     flash_message("Bar creado correctamente.", category="success")
     return redirect(url_for("bars.render_bars", is_admin=is_admin()))
 

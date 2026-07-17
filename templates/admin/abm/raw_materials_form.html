@@ -1,0 +1,17 @@
+{% extends 'partials/general_form.html' %}
+
+{% block form_content %}
+<div class="form-group">
+    <label for="name">Nombre de la materia prima:</label>
+    <input type="text" id="name" name="name" required>
+</div>
+
+<div class="form-group">
+    <label for="category_id">Categoría:</label>
+    <select id="category_id" name="category_id" required>
+        {% for category in categories or [] %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+{% endblock %}
