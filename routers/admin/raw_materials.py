@@ -30,7 +30,7 @@ def render_raw_materials():
     ]
 
     return render_template(
-        "admin/abm/raw_materials.html",
+        "abm/raw_materials.html",
         cols=cols,
         rows=rows,
         page_title="Administrar materias primas",

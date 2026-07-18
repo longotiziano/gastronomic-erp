@@ -7,7 +7,7 @@
             {% if is_admin %}
             <li><a href="{{ url_for('users.render_users') }}">Usuarios</a></li>
             <li><a href="{{ url_for('bars.render_bars') }}">Bares</a></li>
-            <li><a href="">Materias primas</a></li>
+            <li><a href="{{ url_for('raw_materials.render_raw_materials') }}">Materias primas</a></li>
             <li><a href="">Ventas</a></li>
             <li><a href="">Productos</a></li>
             <li><a href="">Empleados</a></li>

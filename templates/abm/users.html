@@ -1,10 +1,10 @@
-{% extends 'admin/abm/abm.html' %}
+{% extends 'abm/abm.html' %}
 
 {% block area_js %}
 <script type="module" src="{{ url_for('static', filename='js/abm/users.js') }}"></script>
 {% endblock %}
 
 {% block abm_form %}
-{% include 'auth/auth_form.html' %}
+{% include 'forms/auth_form.html' %}
 {% endblock %}
 

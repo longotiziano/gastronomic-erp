@@ -28,7 +28,7 @@ def render_bars():
     ]
 
     return render_template(
-        "admin/abm/bars.html",
+        "abm/bars.html",
         cols=cols,
         rows=rows,
         page_title="Administrar bares",
@@ -55,7 +55,7 @@ def create():
 
     create_bar(name=name, address=address) # type: ignore
     flash_message("Bar creado correctamente.", category="success")
-    return redirect(url_for("bars.render_bars", is_admin=is_admin()))
+    return redirect(url_for("bars.render_bars"))
 
 
 @bars_bp.post("/bars/update/<int:bar_id>")
@@ -67,7 +67,7 @@ def update(bar_id: int):
     }
     update_bar(bar_id, updates)
     flash_message("Bar actualizado correctamente.", category="success")
-    return redirect(url_for("bars.render_bars", is_admin=is_admin()))
+    return redirect(url_for("bars.render_bars"))
 
 
 @bars_bp.post("/bars/alt_status/<int:bar_id>")
@@ -75,4 +75,4 @@ def update(bar_id: int):
 def alt_status(bar_id: int):
     alt_bar_status(bar_id)
     flash_message("Estado del bar actualizado correctamente.", category="success")
-    return redirect(url_for("bars.render_bars", is_admin=is_admin()))
+    return redirect(url_for("bars.render_bars"))

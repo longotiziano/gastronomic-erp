@@ -1,7 +1,4 @@
 import { parseDateTime } from "../general/utils.js";
-console.log("¡¡EL ARCHIVO DE MENUS CARGÓ CON ÉXITO!!");
-console.log("¡¡EL ARCHIVO DE MENUS CARGÓ CON ÉXITO!!");
-console.log("¡¡EL ARCHIVO DE MENUS CARGÓ CON ÉXITO!!");
 const fillForm = (fields, data, idKey, form, deleteForm, createUrl, updateUrlBase, toggleUrlBase) => {
     Object.entries(fields).forEach(([fieldId, dataKey]) => {
         const input = document.getElementById(fieldId);
@@ -57,6 +54,6 @@ export const setupCrudModal = (fields, createUrl, updateUrlBase, toggleUrlBase, 
         openModal();
     });
 
-    document.getElementById('closeAdmin')?.addEventListener('click', closeModal);
+    document.getElementById('closeForm')?.addEventListener('click', closeModal);
     overlay.addEventListener('click', closeModal);
 };

@@ -32,7 +32,7 @@ def logout():
     return redirect(url_for("main.index"))
 
 def _login_context() -> str:
-    return render_template("auth/login.html",
+    return render_template("sections/login.html",
         form_title= "Iniciar sesión",
         form_action=url_for('auth.login_post'),
         submit_text="Iniciar sesión",

@@ -38,7 +38,7 @@ def render_users():
         for u in users
     ]
 
-    return render_template('admin/abm/users.html',
+    return render_template('abm/users.html',
         cols=cols,
         rows=rows,
         page_title="Administrar usuarios",

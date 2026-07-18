@@ -9,6 +9,7 @@ tr:hover .edit-btn,
 li:hover .edit-btn,
 .edit-btn:hover {
   visibility: visible;
+  animation: deslizarIzqDer ease 0.3s;
 }
 
 .edit-btn svg {
