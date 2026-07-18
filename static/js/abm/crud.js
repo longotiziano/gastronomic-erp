@@ -1,11 +1,12 @@
 import { parseDateTime } from "../general/utils.js";
-const fillForm = (fields, data, idKey, form, deleteForm, createUrl, updateUrlBase, toggleUrlBase) => {
-    Object.entries(fields).forEach(([fieldId, dataKey]) => {
-        const input = document.getElementById(fieldId);
+
+const fillForm = (fields, data, idKey, form, deleteForm, updateUrlBase, toggleUrlBase) => {
+    Object.entries(fields).forEach(([fieldName, dataKey]) => {
+        // Buscar el campo DENTRO del form, no en todo el documento
+        const input = form.querySelector(`[name="${fieldName}"]`);
         if (!input) return;
 
         if (input.type === 'checkbox') {
-            // chequeo medio raro por formateo
             input.checked = data[dataKey] === true || data[dataKey] === 'true' || data[dataKey] === '1';
         } else {
             input.value = data[dataKey] || '';
@@ -19,41 +20,39 @@ const fillForm = (fields, data, idKey, form, deleteForm, createUrl, updateUrlBas
     }
 };
 
-export const setupCrudModal = (fields, createUrl, updateUrlBase, toggleUrlBase, idKey = 'id') => {
-    const modal = document.querySelector('[data-openby="formOpener"]');
-    const overlay = document.querySelector('.overlay');
-    const form = document.getElementById('form-principal');
-    const deleteForm = document.getElementById('formDelete');
-    const addBtn = document.getElementById('add-btn');
-    const submitBtn = document.querySelector('.submit-btn[type="submit"]');
-    const deleteBtn = document.querySelector('.delete-btn');
+export const setupCrudModal = (container, fields, createUrl, updateUrlBase, toggleUrlBase, idKey = 'id') => {
+    // Todo scopeado al container, no a document
+    const modal = container.querySelector('[data-openby="formOpener"]');
+    const overlay = document.querySelector('.overlay'); // este SÍ puede ser global si es compartido
+    const form = container.querySelector('.form-principal');
+    const deleteForm = container.querySelector('.formDelete');
+    const addBtn = container.querySelector('.add-btn');
+    const submitBtn = container.querySelector('.submit-btn[type="submit"]');
+    const deleteBtn = container.querySelector('.delete-btn');
     const title = modal.querySelector('.block-header h2');
 
     const openModal = () => { modal.classList.add('open'); overlay.classList.add('active'); };
     const closeModal = () => { modal.classList.remove('open'); overlay.classList.remove('active'); };
 
-    document.querySelectorAll('.edit-btn').forEach(btn => {
+    container.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            console.log('Entrando a Edit')
             if (deleteBtn) deleteBtn.hidden = false;
             submitBtn.textContent = 'Actualizar';
             if (title) title.textContent = 'Actualizar';
-            fillForm(fields, btn.dataset, idKey, form, deleteForm, createUrl, updateUrlBase, toggleUrlBase);
+            fillForm(fields, btn.dataset, idKey, form, deleteForm, updateUrlBase, toggleUrlBase);
             openModal();
         });
     });
 
     addBtn?.addEventListener('click', () => {
-        console.log('Entrando a Add')
         if (deleteBtn) deleteBtn.hidden = true;
         submitBtn.textContent = 'Crear';
         if (title) title.textContent = 'Crear';
-        console.log(`Reseteando form -> ${form.outerHTML}`)
         form.reset();
         form.action = createUrl;
         openModal();
     });
 
-    document.getElementById('closeForm')?.addEventListener('click', closeModal);
+    container.querySelector('.closeForm')?.addEventListener('click', closeModal);
     overlay.addEventListener('click', closeModal);
 };

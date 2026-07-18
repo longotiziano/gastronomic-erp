@@ -9,6 +9,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    gap: 2rem;
 }
 
 .admin-title {
@@ -117,8 +118,13 @@
     vertical-align: middle;
 }
 
+.dishes-table tr td:not(:has(.edit-btn)) {
+    background: rgba(255, 255, 255, 0);
+    transition: background 0.3s ease;
+}
+
 .dishes-table tr:hover td:not(:has(.edit-btn)) {
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(255, 255, 255, 0.089);
 }
 
 .dish-thumb {
@@ -202,88 +208,4 @@
     color: #fff;
     margin: 0 0 1.5rem;
     font-size: 1.25rem;
-}
-
-/* Formulario */
-.form-label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    margin-bottom: 1rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-}
-
-.form-label input[type="checkbox"] {
-    width: auto;
-    margin-top: 0.25rem;
-    accent-color: #dd9755;
-    cursor: pointer;
-}
-
-.form-input {
-    background: rgb(32, 31, 31);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
-    border-radius: 6px;
-    padding: 0.6rem 0.75rem;
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 0.95rem;
-    font-family: Arial, sans-serif;
-    transition: border-color 0.2s;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: #dd9755;
-}
-
-.form-input option {
-    background: rgb(32, 31, 31);
-}
-
-.form-textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-.form-error {
-    color: #e87a7a;
-    background: rgba(200, 50, 50, 0.12);
-    border: 1px solid rgba(200, 50, 50, 0.3);
-    border-radius: 6px;
-    padding: 0.75rem;
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: flex-end;
-    margin-top: 1.5rem;
-}
-
-.table-empty {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.4);
-    padding: 2rem;
-}
-
-/* Estados */
-.loading-spinner {
-    color: rgba(255, 255, 255, 0.5);
-    text-align: center;
-    padding: 4rem 0;
-    font-size: 1rem;
-}
-
-.error-message {
-    color: #e87a7a;
-    background: rgba(200, 50, 50, 0.12);
-    border: 1px solid rgba(200, 50, 50, 0.3);
-    border-radius: 8px;
-    padding: 1.25rem;
-    text-align: center;
 }

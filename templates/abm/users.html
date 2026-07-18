@@ -1,10 +1,15 @@
 {% extends 'abm/abm.html' %}
 
 {% block area_js %}
-<script type="module" src="{{ url_for('static', filename='js/abm/users.js') }}"></script>
-{% endblock %}
+<script type="module">
+import { setupCrudModal } from "{{ url_for('static', filename='js/abm/crud.js') }}";
 
-{% block abm_form %}
-{% include 'forms/auth_form.html' %}
+setupCrudModal(
+    document.querySelector('[data-abm="users"]'),
+    { name: 'name', email: 'email', address: 'address', rol: 'rol', daily_salary: 'daily_salary', bar_id: 'bar_id' },
+    "{{ url_for('users.create') }}",
+    "{{ url_for('users.update', user_id=0) }}",
+    "{{ url_for('users.alt_status', user_id=0) }}"
+);
+</script>
 {% endblock %}
-

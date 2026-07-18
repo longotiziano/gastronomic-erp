@@ -1,31 +1,25 @@
 {#
-  abm.html -> Layout base para páginas de administración tipo ABM (Alta/Baja/Modificación).
-
-  Pensado para extenderse desde una página concreta (admin/users.html, admin/menus.html, etc.),
-  que sobreescribe los bloques abm_form y area_js con su propio formulario modal y su propio
-  setupCrudModal(config).
+  abm.html -> Layout base para páginas de administración tipo ABM.
 
   Requiere (pasados al extender + render_template):
-    page_title: str = Título de la pestaña del navegador.
-    title, cols, rows, page, per_page, total_pages, plus_label (opcional)
-        -> Ver adm_table.html -> se renderiza vía include con estas variables.
+    page_title: str
+    tables: list[dict]  -> ver adm_table.html para el shape de cada tabla.
+                            Cada tabla puede opcionalmente traer "form_template": str,
+                            que apunta al partial del form modal correspondiente.
 
   Bloques a sobreescribir en la página hija:
-    abm_form   El formulario/modal específico de la entidad (ej: auth_form.html con admin_user=true).
-    area_js    El `script` de la página, con su llamada a setupCrudModal({...}).
+    area_js    El script con las llamadas a setupCrudModal(...), una por tabla.
 #}
-
 {% extends 'partials/base.html' %}
+{% from 'abm/adm_table.html' import render_table %}
+
 {% block title %} {{ page_title }} {% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/abm.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/btns/edit_btn.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/general/pagination.css') }}">
-
-<!-- JS -->
-{% block area_js %}
-{% endblock %}
+{% block area_js %}{% endblock %}
 {% endblock %}
 
 {% block header %}
@@ -34,8 +28,15 @@
 {% endblock %}
 
 {% block body %}
-{% block abm_form %}
-{% endblock %}
-{% include 'abm/adm_table.html' %}
-<div class="overlay" id="overlay"></div>
+<main class="admin-page">
+    {% for table in tables %}
+    <section class="abm-block" data-abm="{{ table.id }}">
+        {{ render_table(table) }}
+        {% if table.form_template %}
+            {% include table.form_template %}
+        {% endif %}
+    </section>
+    {% endfor %}
+    <div class="overlay" id="overlay"></div>
+</main>
 {% endblock %}

@@ -16,11 +16,11 @@ def render_users():
     pagination = obtain_users()
     bars = obtain_bars()
     users: list[User] = pagination.items
-    print(users)
+
     cols = ['ID', 'Nombre', 'Email', 'Dirección', 'Rol', 'Salario diario', 'Bar', 'Fecha de creación', 'Estado']
     rows = [
         {
-            "cells": [u.id, u.name, u.email, u.address or "-", u.rol.value, 
+            "cells": [u.id, u.name, u.email, u.address or "-", u.rol.value,
                     u.daily_salary, u.bar.name, format_date(u.created_at), u.record_status],
             "data": {
                 "id": u.id,
@@ -39,19 +39,23 @@ def render_users():
     ]
 
     return render_template('abm/users.html',
-        cols=cols,
-        rows=rows,
         page_title="Administrar usuarios",
-        title="Usuarios",
-        plus_label="Agregar usuario",
-        pagination=pagination,
-
-        form_title="Administrar usuario",
+        tables=[
+            {
+                "id": "users", # for `crud.js` recognition
+                "title": "Usuarios",
+                "cols": cols,
+                "rows": rows,
+                "plus_label": "Agregar usuario",
+                "pagination": pagination,
+                "form_template": "forms/auth_form.html",
+            }
+        ],
         deactivate_row=True,
         is_modal=True,
         abm_mode=True,
         form_action=url_for('users.update', user_id=0),
-        bars=bars,
+        bars=bars, # used by the users' form
         is_admin=is_admin()
     )
 

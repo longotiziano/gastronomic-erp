@@ -41,6 +41,7 @@ def render_raw_materials():
         deactivate_row=True,
         is_modal=True,
         abm_mode=True,
+        category_label="Administrar categorías",
         form_action=url_for("raw_materials.update", raw_material_id=0),
         categories=categories,
         is_admin=is_admin(),

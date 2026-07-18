@@ -1,42 +1,41 @@
 {#
-  adm_table.html -> Tabla genérica para paneles admin (usuarios, reservas, menú).
+  adm_table.html -> Tabla genérica reutilizable para paneles admin (usuarios, reservas, menú, categorías...).
 
-  Requiere:
-    title: str = Título del header.
-    cols: list[str] = Nombres de columna (mismo orden que row.cells).
-    rows: list[dict] = Cada fila: {"cells": [...], "data": {...}}.
-        -> cells = valores a mostrar. data = lo que va como data-* en el
-        -> botón de editar (usado por setupCrudModal en crud.js).
-    page, per_page, total_pages: ints = Para la paginación.
+  Uso: {% from 'abm/adm_table.html' import render_table %}
+       {{ render_table(table) }}
 
-  Opcional:
-    plus_label  str   Texto del botón "+ Agregar...". Si no se pasa, no se muestra el botón.
-
-  Columnas especiales (detectadas por nombre en cols):
-    'Estado': badge active/inactive
-    'Imagen': <img>
-    'Disponible': badge Disponible/No disponible
+  table (dict) requiere:
+    id: str        = Identificador único del bloque (ej: "products", "categories"). Se usa como data-abm.
+    title: str
+    cols: list[str]
+    rows: list[dict]  {"cells": [...], "data": {...}}
+    plus_label: str (opcional)
+    pagination: objeto con .page, .pages, .has_prev, .has_next, .per_page (opcional)
 #}
-<main class="admin-page">
+{% macro render_table(table) %}
     <div class="admin-header">
-        <h1 class="admin-title">{{ title }}</h1>
-        {% if plus_label %}
-        <button id="add-btn" class="btn btn-primary">+ {{ plus_label }}</button>
+        <h1 class="admin-title">{{ table.title }}</h1>
+        {% if table.category_label %}
+        <button class="categoryBtn btn btn-primary">{{ table.category_label }}</button>
+        {% endif %}
+        {% if table.plus_label %}
+        <button class="add-btn btn btn-primary">+ {{ table.plus_label }}</button>
         {% endif %}
     </div>
-    <table id="dishes-table" class="dishes-table">
+
+    <table class="dishes-table">
         <thead>
             <tr style="pointer-events: none;">
-                {% for col in cols %}
+                {% for col in table.cols %}
                 <th>{{ col }}</th>
                 {% endfor %}
             </tr>
         </thead>
-        <tbody id="dishes-tbody">
-            {% for row in rows or [] %}
+        <tbody>
+            {% for row in table.rows or [] %}
             <tr>
                 {% for cell in row.cells %}
-                    {% set col_name = cols[loop.index0] %}
+                    {% set col_name = table.cols[loop.index0] %}
                     {% if col_name == 'Estado' %}
                         <td>
                             {% if cell %}
@@ -62,17 +61,16 @@
             {% endfor %}
         </tbody>
     </table>
-    {% if pagination %}
+
+    {% if table.pagination %}
     <div class="pagination">
-        {% if pagination.has_prev %}
-            <a href="?page={{ pagination.page - 1 }}&per_page={{ pagination.per_page }}">←</a>
+        {% if table.pagination.has_prev %}
+            <a href="?page={{ table.pagination.page - 1 }}&per_page={{ table.pagination.per_page }}">←</a>
         {% endif %}
-
-        <span>Página {{ pagination.page }} de {{ pagination.pages }}</span>
-
-        {% if pagination.has_next %}
-            <a href="?page={{ pagination.page + 1 }}&per_page={{ pagination.per_page }}">→</a>
+        <span>Página {{ table.pagination.page }} de {{ table.pagination.pages }}</span>
+        {% if table.pagination.has_next %}
+            <a href="?page={{ table.pagination.page + 1 }}&per_page={{ table.pagination.per_page }}">→</a>
         {% endif %}
     </div>
     {% endif %}
-</main>
+{% endmacro %}
