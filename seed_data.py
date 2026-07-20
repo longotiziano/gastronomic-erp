@@ -1,5 +1,7 @@
 def load_initial_data():
     from services.bars import create_bar
+    from services.raw_materials_categories import create_raw_material_category
+    from services.raw_materials import create_raw_material
     from services.users import create_user
     from database.repositories.bars import BarRepository
 
@@ -17,3 +19,6 @@ def load_initial_data():
         address="Admin Address",
         daily_salary=0.0
     )
+
+    create_raw_material_category("Carnes")
+    create_raw_material("Carne picada", 1)

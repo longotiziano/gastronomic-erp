@@ -10,23 +10,22 @@ from utils.helpers import is_admin
 
 raw_materials_bp = Blueprint("raw_materials", __name__)
 
-
 @raw_materials_bp.get("/raw-materials")
 @admin_required
 def render_raw_materials():
     raw_materials = obtain_raw_materials()
-    bars = obtain_bars()
     categories = obtain_raw_material_categories()
 
-    rm_cols = ["ID", "Nombre", "Categoría", "Estado"]
+    rm_cols = ["ID", "Nombre", "Categoría", "Stock", "Estado"]
     rm_rows = [
         {
-            "cells": [item.id, item.name, item.category.name if item.category else "-", item.record_status],
+            "cells": [item.id, item.name, item.category.name if item.category else "-", item.stock.amount if item.stock else 0, item.record_status],
             "data": {
                 "id": item.id,
                 "name": item.name,
                 "category_id": item.category_id,
-                "record_status": item.record_status,
+                "amount": item.stock.amount if item.stock else 0,
+                "record_status": item.record_status
             },
         }
         for item in raw_materials
@@ -74,7 +73,6 @@ def render_raw_materials():
         is_modal=True,
         abm_mode=True,
         form_action='users/update',
-        bars=bars, # used by the users' form
         is_admin=is_admin()
     )
 

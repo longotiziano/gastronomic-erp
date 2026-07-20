@@ -17,10 +17,12 @@ class Stock(db.Model):
     raw_material_id = db.Column(
         db.Integer, db.ForeignKey("raw_materials.id"), unique=True, nullable=False
     )
+    bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=False)
     amount = db.Column(db.Float, nullable=False, default=0.0)
 
     # Relationships
     raw_material = db.relationship("RawMaterial", back_populates="stock")
+    bar = db.relationship("Bar", back_populates="stock")
 
     def __repr__(self):
         return f"<Stock id={self.id} raw_material_id={self.raw_material_id} amount={self.amount}>"

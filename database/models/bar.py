@@ -13,6 +13,7 @@ class Bar(db.Model):
 
     # Relationships
     employees = db.relationship("User", back_populates="bar", lazy="dynamic")
+    stock = db.relationship("Stock", back_populates="bar", lazy="dynamic")
     products = db.relationship("Product", back_populates="bar", lazy="dynamic")
     sales = db.relationship("Sale", back_populates="bar", lazy="dynamic")
     arqueos = db.relationship("Arqueo", back_populates="bar", lazy="dynamic")

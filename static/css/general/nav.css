@@ -107,9 +107,12 @@
     padding: 8px 1rem;
     box-sizing: border-box;
     margin: 0px 25rem 0px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .logo-link img {
-    width: auto;
-    height: 100%;
+    width: auto;    
+    height: 70%;
 }

@@ -1,8 +1,9 @@
 .btn-icon {
+    aspect-ratio: 1 / 1;
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 5px;
-    padding: 0.35rem 0.65rem;
+    padding: 0.35rem;
     cursor: pointer;
     font-size: 0.8rem;
     font-family: Arial, sans-serif;
