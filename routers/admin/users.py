@@ -46,7 +46,6 @@ def render_users():
                 "title": "Usuarios",
                 "cols": cols,
                 "rows": rows,
-                "plus_label": "Agregar usuario",
                 "pagination": pagination,
                 "form_template": "forms/auth_form.html",
             }

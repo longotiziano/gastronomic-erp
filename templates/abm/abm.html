@@ -9,6 +9,8 @@
 
   Bloques a sobreescribir en la página hija:
     area_js    El script con las llamadas a setupCrudModal(...), una por tabla.
+
+    Tambien acepta un parametro main content para saber si es la pagina que va a estar centrada, en caso de que tambien haya sidebars
 #}
 {% extends 'partials/base.html' %}
 {% from 'abm/adm_table.html' import render_table %}
@@ -28,9 +30,16 @@
 {% endblock %}
 
 {% block body %}
-<main class="admin-page">
+<main class="page-content"
+{% if tables | length == 1 %}
+style="align-items: stretch; justify-content: center;"
+{% endif %}>
     {% for table in tables %}
-    <section class="abm-block" data-abm="{{ table.id }}">
+    <section class="block abm-block" data-abm="{{ table.id }}" 
+    {% if table.main_content %}
+    style="flex: 1;"
+    {% endif %}
+    >
         {{ render_table(table) }}
         {% if table.form_template %}
             {% include table.form_template %}

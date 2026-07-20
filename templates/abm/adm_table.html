@@ -13,16 +13,11 @@
     pagination: objeto con .page, .pages, .has_prev, .has_next, .per_page (opcional)
 #}
 {% macro render_table(table) %}
-    <div class="admin-header">
-        <h1 class="admin-title">{{ table.title }}</h1>
-        {% if table.category_label %}
-        <button class="categoryBtn btn btn-primary">{{ table.category_label }}</button>
-        {% endif %}
-        {% if table.plus_label %}
-        <button class="add-btn btn btn-primary">+ {{ table.plus_label }}</button>
-        {% endif %}
+    <div class="block-header">
+        <h2>{{ table.title }}</h2>
+        <button class="config-btn add-btn" style="font-size: 2rem;">+</button>
     </div>
-
+    <div class="block-content">
     <table class="dishes-table">
         <thead>
             <tr style="pointer-events: none;">
@@ -61,9 +56,9 @@
             {% endfor %}
         </tbody>
     </table>
-
+    </div>
     {% if table.pagination %}
-    <div class="pagination">
+    <div class="block-footer pagination">
         {% if table.pagination.has_prev %}
             <a href="?page={{ table.pagination.page - 1 }}&per_page={{ table.pagination.per_page }}">←</a>
         {% endif %}

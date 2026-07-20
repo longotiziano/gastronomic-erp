@@ -17,7 +17,7 @@
     padding: 0.5rem;
     display: flex;
     justify-content: space-between;
-    align-items: stretch;
+    align-items: center;
     border-bottom: 2px solid rgba(124, 124, 124, 0.123);
 }
 

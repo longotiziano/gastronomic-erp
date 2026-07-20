@@ -56,14 +56,14 @@ def render_raw_materials():
                 "rows": rm_rows,
                 "plus_label": "Agregar materia prima",
                 "pagination": None,
-                "form_template": "forms/raw_materials_form.html"
+                "form_template": "forms/raw_materials_form.html",
+                "main_content": True
             },
             {
                 "id": "raw-material-categories",
                 "title": "Categorías",
                 "cols": cat_cols,
                 "rows": cat_rows,
-                "plus_label": "Agregar categoría",
                 "pagination": None,
                 "form_template": "forms/raw_categories_form.html"
             },

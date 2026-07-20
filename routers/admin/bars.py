@@ -36,7 +36,6 @@ def render_bars():
                 "title": "Bares",
                 "cols": cols,
                 "rows": rows,
-                "plus_label": "Agregar bar",
                 "pagination": None,
                 "form_template": "forms/bars_form.html",
             }
