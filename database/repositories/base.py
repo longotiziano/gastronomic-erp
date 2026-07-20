@@ -1,8 +1,11 @@
 from sqlalchemy.exc import IntegrityError
+from flask_sqlalchemy.pagination import Pagination
 from typing import Generic, TypeVar, Type, Optional
 from database import db
+from sqlalchemy import or_
 
 from utils.exceptions import ConflictError
+from utils.querys import _paginate_query
 
 T = TypeVar("T")
 
@@ -44,6 +47,41 @@ class BaseRepository(Generic[T]):
             query = query.filter(self.model.record_status == True)  # noqa: E712 # type: ignore
         return query.all()
 
+    def get_filtered_sorted(
+        self,
+        search: str = "",
+        filters: dict = None, # type: ignore
+        sorts: dict = None, # type: ignore
+        page: int = 1,
+        per_page: int = 20
+    ) -> Pagination:
+        filters = filters or {}
+        sorts = sorts or {}
+        allowed = getattr(self.model, "filterable_fields", set())
+
+        query = db.session.query(self.model)
+
+        if search:
+            search_conditions = [
+                getattr(self.model, field).ilike(f"%{search}%")
+                for field in allowed
+            ]
+            if search_conditions:
+                query = query.filter(or_(*search_conditions))
+
+        for k, v in filters.items():
+            if k not in allowed:
+                continue
+            query = query.filter(getattr(self.model, k) == v)
+
+        for field, descending in sorts.items():
+            if field not in allowed:
+                continue
+            column = getattr(self.model, field)
+            query = query.order_by(column.desc() if descending else column.asc())
+
+        return _paginate_query(query, page, per_page) # type: ignore
+
     def get_by_filter(self, **filters) -> list[T]:
         """
         Return records matching all keyword filters.
@@ -68,7 +106,7 @@ class BaseRepository(Generic[T]):
         query = db.session.query(self.model)
         if active_only and hasattr(self.model, "record_status"):
             query = query.filter(self.model.record_status == True)  # noqa: E712 # type: ignore
-        return query.paginate(page=page, per_page=per_page, error_out=False) # type: ignore
+        return _paginate_query(query, page=page, per_page=per_page, error_out=False) # type: ignore
 
     # ------------------------------------------------------------------ #
     #  Write                                                               #

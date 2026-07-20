@@ -1,14 +1,42 @@
 from typing import Generic, TypeVar, Any, Optional
 from database.repositories.base import BaseRepository
 from utils.exceptions import ConflictError, NotFoundError, ValidationError
+from flask import request
+from flask_sqlalchemy.pagination import Pagination
 
 T = TypeVar("T")
-
 
 class BaseCrudService(Generic[T]):
     def __init__(self, repo: BaseRepository[T], entity_name: str = "entidad"):
         self.repo = repo
         self.entity_name = entity_name
+
+    def filter_sort(self, table_id: str) -> Pagination:
+        search = ""
+        filters = {}
+        sorts = {}
+        prefix = f"{table_id}_"
+
+        for key, value in request.args.items():
+            if not key.startswith(prefix):
+                continue
+            
+            stripped = key.removeprefix(prefix)
+
+            if stripped == "search" and value:
+                search = value
+            elif stripped.startswith("filter_"):
+                field = stripped.removeprefix("filter_")
+                filters[field] = value
+            elif stripped.startswith("sort_"):
+                field = stripped.removeprefix("sort_")
+                sorts[field] = (value == "desc")
+
+        page = request.args.get(f"{prefix}page", 1, type=int)
+
+        return self.repo.get_filtered_sorted(
+            search=search, filters=filters, sorts=sorts, page=page
+        )
 
     def alt_status(self, entity_id: int) -> T:
         item = self.repo.get_by_id(entity_id)

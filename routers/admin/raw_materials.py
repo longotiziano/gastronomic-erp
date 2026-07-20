@@ -1,7 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 
+from database.models.raw_material import RawMaterial, RawMaterialCategory
 from services.bars import obtain_bars
-from services.raw_materials import create_raw_material, obtain_raw_materials, update_raw_material, alt_raw_material_status
+from services.raw_materials import  create_raw_material, obtain_raw_materials, update_raw_material, alt_raw_material_status
 from services.raw_materials_categories import obtain_raw_material_categories, create_raw_material_category, update_raw_material_category, alt_raw_material_category_status
 from utils.auth_decorator import admin_required
 from utils.exceptions import ValidationError
@@ -13,8 +14,11 @@ raw_materials_bp = Blueprint("raw_materials", __name__)
 @raw_materials_bp.get("/raw-materials")
 @admin_required
 def render_raw_materials():
-    raw_materials = obtain_raw_materials()
-    categories = obtain_raw_material_categories()
+    pagination_rm = obtain_raw_materials()
+    pagination_rmc = obtain_raw_material_categories()
+    raw_materials: list[RawMaterial] = pagination_rm.items
+    categories: list[RawMaterialCategory] = pagination_rmc.items
+    
 
     rm_cols = ["ID", "Nombre", "Categoría", "Stock", "Estado"]
     rm_rows = [
@@ -56,7 +60,9 @@ def render_raw_materials():
                 "plus_label": "Agregar materia prima",
                 "pagination": None,
                 "form_template": "forms/raw_materials_form.html",
-                "main_content": True
+                "main_content": True,
+                "get_form_action": url_for("raw_materials.render_raw_materials"),
+                "pagination": pagination_rm
             },
             {
                 "id": "raw-material-categories",
@@ -64,7 +70,10 @@ def render_raw_materials():
                 "cols": cat_cols,
                 "rows": cat_rows,
                 "pagination": None,
-                "form_template": "forms/raw_categories_form.html"
+                "form_template": "forms/raw_categories_form.html",
+                "secondary_content": True,
+                "get_form_action": url_for("raw_materials.render_raw_materials"),
+                "pagination": pagination_rmc
             },
         ],
 

@@ -38,6 +38,8 @@ style="align-items: stretch; justify-content: center;"
     <section class="block abm-block" data-abm="{{ table.id }}" 
     {% if table.main_content %}
     style="flex: 1;"
+    {% elif table.secondary_content %}
+    style="flex: 0.5;"
     {% endif %}
     >
         {{ render_table(table) }}

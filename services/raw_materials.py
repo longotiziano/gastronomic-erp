@@ -3,14 +3,13 @@ from database.repositories.raw_materials import RawMaterialCategoryRepository, R
 from services.base_service import BaseCrudService
 from utils.exceptions import NotFoundError, ValidationError
 from utils.helpers import clean_string
+from flask_sqlalchemy.pagination import Pagination
 
 _service = BaseCrudService(RawMaterialRepository(), entity_name="materia prima")
 _category_repo = RawMaterialCategoryRepository()
 
-
-def obtain_raw_materials() -> list[RawMaterial]:
-    return _service.repo.get_all(active_only=False)
-
+def obtain_raw_materials() -> Pagination:
+    return _service.filter_sort(table_id="raw-materials")
 
 def create_raw_material(name: str, category_id: int) -> RawMaterial:
     name = clean_string(name, title=True)

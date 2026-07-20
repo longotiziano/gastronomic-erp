@@ -84,8 +84,8 @@
 
 .page-content {
     padding: 20px;
-    margin-top: 4.5rem;
-    height: calc(100vh - 4.5rem - 40px);
+    margin-top: 3rem;
+    height: calc(100vh - 3rem - 40px);
     display: flex;
     flex-direction: row;
     overflow: hidden;

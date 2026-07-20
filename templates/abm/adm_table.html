@@ -12,23 +12,26 @@
     pagination: objeto con .page, .pages, .has_prev, .has_next, .per_page (opcional)
 #}
 {% macro render_table(table) %}
+    <form action="{{ get_form_action }}" method="GET">    
     <div class="block-header">
-        <h2>{{ table.title }}</h2>
+        <h2>{{ table.title }}</h2>    
         <div class="block border flex-block flex-main-content">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-            <form action="{{ get_form_action }}" method="GET">    
-                <input type="text" placeholder="Buscar elemento..." style="width: 100%;">
-            </form>
+            <input type="text" name="{{ table.id }}_search" value="{{ table.search_value or '' }}" placeholder="Buscar elemento..." style="width: 100%;">
         </div>
         <div class="header-actions">
-            <button class="btn-edit btn-icon" style="font-size: 2rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-wide-narrow-icon lucide-arrow-down-wide-narrow"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>            </button>
-            <button class="btn-edit btn-icon" style="font-size: 2rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-funnel-icon lucide-funnel"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
+            <button type="button" class="btn-edit btn-icon" style="font-size: 2rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-wide-narrow-icon lucide-arrow-down-wide-narrow"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>            </button>
+            <button type="button" class="btn-edit btn-icon" style="font-size: 2rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-funnel-icon lucide-funnel"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
             </button>
-            <button class="btn-edit btn-icon add-btn" style="font-size: 2rem;">+</button>
+            <button type="button" class="btn-edit btn-icon add-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            </button>
         </div>
     </div>
+    </form>
+    
     <div class="block-content">
     <table class="dishes-table">
         <thead>
@@ -72,11 +75,11 @@
     {% if table.pagination %}
     <div class="block-footer pagination">
         {% if table.pagination.has_prev %}
-            <a href="?page={{ table.pagination.page - 1 }}&per_page={{ table.pagination.per_page }}">←</a>
+            <a href="?{{ table.id }}_page={{ table.pagination.page - 1 }}&{{ table.id }}_search={{ table.search_value or '' }}">←</a>
         {% endif %}
         <span>Página {{ table.pagination.page }} de {{ table.pagination.pages }}</span>
         {% if table.pagination.has_next %}
-            <a href="?page={{ table.pagination.page + 1 }}&per_page={{ table.pagination.per_page }}">→</a>
+            <a href="?{{ table.id }}_page={{ table.pagination.page + 1 }}&{{ table.id }}_search={{ table.search_value or '' }}">→</a>
         {% endif %}
     </div>
     {% endif %}

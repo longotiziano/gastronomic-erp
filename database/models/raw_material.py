@@ -23,6 +23,8 @@ class RawMaterial(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey("raw_material_categories.id"), nullable=False)
     record_status = db.Column(db.Boolean, default=True, nullable=False)
 
+    filterable_fields = ["name", "category_id", "record_status"]
+
     # Relationships
     category = db.relationship("RawMaterialCategory", back_populates="raw_materials")
     recipes = db.relationship("Recipe", back_populates="raw_material", lazy="dynamic")
