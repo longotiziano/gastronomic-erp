@@ -86,7 +86,7 @@ def update_user(user_id: int, updates: dict) -> None:
         validate_password(password)
         processed_updates['password'] = generate_password_hash(password)
 
-    if updates.get('daily_salary'):
+    if 'daily_salary' in updates and updates['daily_salary'] is not None:
         validate_daily_salary(updates['daily_salary'])
         processed_updates['daily_salary'] = updates['daily_salary']
 

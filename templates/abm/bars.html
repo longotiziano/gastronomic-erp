@@ -1,7 +1,19 @@
 {% extends 'abm/abm.html' %}
 
 {% block area_js %}
-<script type="module" src="{{ url_for('static', filename='js/abm/bars.js') }}"></script>
+<script type="module">
+import { setupCrudModal } from "{{ url_for('static', filename='js/abm/crud.js') }}";
+
+const container = document.querySelector('[data-abm="bars"]');
+
+setupCrudModal(
+    container,
+    { name: 'name', address: 'address' },
+    "/bars/create",
+    "/bars/update",
+    "/bars/alt_status"
+);
+</script>
 {% endblock %}
 
 {% block abm_form %}

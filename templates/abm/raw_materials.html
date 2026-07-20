@@ -1,9 +1,27 @@
 {% extends 'abm/abm.html' %}
 
 {% block area_js %}
-<script type="module" src="{{ url_for('static', filename='js/abm/raw_materials.js') }}"></script>
+<script type="module">
+import { setupCrudModal } from "{{ url_for('static', filename='js/abm/crud.js') }}";
+
+setupCrudModal(
+    document.querySelector('[data-abm="raw-materials"]'),
+    { name: 'name', category_id: 'category_id' },
+    "/raw-materials/create",
+    "/raw-materials/update",
+    "/raw-materials/alt_status"
+);
+
+setupCrudModal(
+    document.querySelector('[data-abm="raw-material-categories"]'),
+    { name: 'name' },
+    "/raw-materials/categories/create",
+    "/raw-materials/categories/update",
+    "/raw-materials/categories/alt_status"
+);
+</script>
 {% endblock %}
 
 {% block abm_form %}
-{% include 'forms/raw_materials_form.html' %}
+{% include 'forms/bars_form.html' %}
 {% endblock %}

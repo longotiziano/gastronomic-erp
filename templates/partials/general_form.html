@@ -55,10 +55,10 @@
 
         </form>
     </div>
+    {% if deactivate_row or delete_row %}
+    <form class="formDelete" action="{{ delete_form_action }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    </form>
+    {% endif %}
 </div>
 
-{% if deactivate_row or delete_row %}
-<form class="formDelete" action="{{ delete_form_action }}" method="POST">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-</form>
-{% endif %}

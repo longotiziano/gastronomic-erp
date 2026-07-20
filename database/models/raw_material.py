@@ -6,6 +6,7 @@ class RawMaterialCategory(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    record_status = db.Column(db.Boolean, default=True, nullable=False)
 
     # Relationships
     raw_materials = db.relationship("RawMaterial", back_populates="category", lazy="dynamic")

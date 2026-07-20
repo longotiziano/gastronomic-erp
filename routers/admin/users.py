@@ -54,7 +54,7 @@ def render_users():
         deactivate_row=True,
         is_modal=True,
         abm_mode=True,
-        form_action=url_for('users.update', user_id=0),
+        form_action='users/update',
         bars=bars, # used by the users' form
         is_admin=is_admin()
     )

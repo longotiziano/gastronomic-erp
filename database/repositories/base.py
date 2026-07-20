@@ -27,6 +27,13 @@ class BaseRepository(Generic[T]):
         """Return a single record by primary key, or None if not found."""
         return db.session.get(self.model, id)
 
+    def record_exists(self, col_name: str, check_value, exclude_id: Optional[int] = None) -> bool:
+        column = getattr(self.model, col_name)
+        query = db.session.query(self.model).filter(column == check_value)
+        if exclude_id is not None and hasattr(self.model, "id"):
+            query = query.filter(self.model.id != exclude_id) # type: ignore
+        return db.session.query(query.exists()).scalar()
+    
     def get_all(self, active_only: bool = True) -> list[T]:
         """
         Return all records.
@@ -34,7 +41,7 @@ class BaseRepository(Generic[T]):
         """
         query = db.session.query(self.model)
         if active_only and hasattr(self.model, "record_status"):
-            query = query.filter(self.model.record_status == True)  # noqa: E712
+            query = query.filter(self.model.record_status == True)  # noqa: E712 # type: ignore
         return query.all()
 
     def get_by_filter(self, **filters) -> list[T]:
@@ -60,8 +67,8 @@ class BaseRepository(Generic[T]):
         """
         query = db.session.query(self.model)
         if active_only and hasattr(self.model, "record_status"):
-            query = query.filter(self.model.record_status == True)  # noqa: E712
-        return query.paginate(page=page, per_page=per_page, error_out=False)
+            query = query.filter(self.model.record_status == True)  # noqa: E712 # type: ignore
+        return query.paginate(page=page, per_page=per_page, error_out=False) # type: ignore
 
     # ------------------------------------------------------------------ #
     #  Write                                                               #
@@ -111,6 +118,6 @@ class BaseRepository(Generic[T]):
                 f"{self.model.__name__} does not support soft delete (no record_status column). "
                 "Override delete() in the concrete repository if physical deletion is needed."
             )
-        instance.record_status = False
+        instance.record_status = False # type: ignore
         db.session.commit()
         return True

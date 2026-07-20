@@ -29,18 +29,23 @@ def render_bars():
 
     return render_template(
         "abm/bars.html",
-        cols=cols,
-        rows=rows,
         page_title="Administrar bares",
-        title="Bares",
-        plus_label="Agregar bar",
-        pagination=None,
-        form_title="Administrar bar",
+        tables=[
+            {
+                "id": "bars",
+                "title": "Bares",
+                "cols": cols,
+                "rows": rows,
+                "plus_label": "Agregar bar",
+                "pagination": None,
+                "form_template": "forms/bars_form.html",
+            }
+        ],
+
         deactivate_row=True,
         is_modal=True,
         abm_mode=True,
-        form_action=url_for("bars.update", bar_id=0),
-        is_admin=is_admin(),
+        is_admin=is_admin()
     )
 
 

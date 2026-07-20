@@ -33,7 +33,7 @@ const alertElimination = () => {
 
             showAlert('Confirmación', text, 'warning').then((result) => {
                 if (result.isConfirmed) {
-                    const form = document.getElementById(button.dataset.formid);
+                    const form = button.closest('.fixed-block').querySelector('.formDelete')
                     if (form) form.submit();
                 }
             });

@@ -13,6 +13,7 @@ class ProductCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     sector = db.Column(db.Enum(ProductSector), nullable=False)
+    record_status = db.Column(db.Boolean, default=True, nullable=False)
 
     # Relationships
     products = db.relationship("Product", back_populates="category", lazy="dynamic")

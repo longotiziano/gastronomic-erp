@@ -7,9 +7,9 @@ import { setupCrudModal } from "{{ url_for('static', filename='js/abm/crud.js') 
 setupCrudModal(
     document.querySelector('[data-abm="users"]'),
     { name: 'name', email: 'email', address: 'address', rol: 'rol', daily_salary: 'daily_salary', bar_id: 'bar_id' },
-    "{{ url_for('users.create') }}",
-    "{{ url_for('users.update', user_id=0) }}",
-    "{{ url_for('users.alt_status', user_id=0) }}"
+    "/users/create",
+    "/users/update",
+    "/users/alt_status"
 );
 </script>
 {% endblock %}
