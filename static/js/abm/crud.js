@@ -34,13 +34,15 @@ export const setupCrudModal = (container, fields, createUrl, updateUrlBase, togg
     const openModal = () => { modal.classList.add('open'); overlay.classList.add('active'); };
     const closeModal = () => { modal.classList.remove('open'); overlay.classList.remove('active'); };
 
-    container.querySelectorAll('.edit-btn').forEach(btn => {
+    container.querySelectorAll('tr').forEach(btn => {
         btn.addEventListener('click', () => {
+            const editBtn = btn.querySelector('.edit-btn');
+            if (!editBtn) return;
             if (deleteBtn) deleteBtn.hidden = false;
             submitBtn.textContent = 'Actualizar';
             if (title) title.textContent = 'Actualizar';
-            fillForm(fields, btn.dataset, idKey, form, deleteForm, updateUrlBase, toggleUrlBase);
-            openModal();
+            fillForm(fields, editBtn.dataset, idKey, form, deleteForm, updateUrlBase, toggleUrlBase);
+            openModal();    
         });
     });
 

@@ -29,6 +29,8 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     record_status = db.Column(db.Boolean, default=True, nullable=False)
 
+    filterable_fields = ["name", "email", "rol", "bar_id", "record_status"]
+
     # Relationships
     bar = db.relationship("Bar", back_populates="employees")
     payrolls = db.relationship("Payroll", back_populates="employee", lazy="dynamic")

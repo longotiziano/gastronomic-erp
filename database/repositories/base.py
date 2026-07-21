@@ -106,7 +106,7 @@ class BaseRepository(Generic[T]):
         query = db.session.query(self.model)
         if active_only and hasattr(self.model, "record_status"):
             query = query.filter(self.model.record_status == True)  # noqa: E712 # type: ignore
-        return _paginate_query(query, page=page, per_page=per_page, error_out=False) # type: ignore
+        return _paginate_query(query, page=page, per_page=per_page) # type: ignore
 
     # ------------------------------------------------------------------ #
     #  Write                                                               #

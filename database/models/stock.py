@@ -14,9 +14,7 @@ class Stock(db.Model):
     __tablename__ = "stock"
 
     id = db.Column(db.Integer, primary_key=True)
-    raw_material_id = db.Column(
-        db.Integer, db.ForeignKey("raw_materials.id"), unique=True, nullable=False
-    )
+    raw_material_id = db.Column(db.Integer, db.ForeignKey("raw_materials.id"), unique=True, nullable=False)
     bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=False)
     amount = db.Column(db.Float, nullable=False, default=0.0)
 

@@ -20,25 +20,26 @@ def render_raw_materials():
     categories: list[RawMaterialCategory] = pagination_rmc.items
     
 
-    rm_cols = ["ID", "Nombre", "Categoría", "Stock", "Estado"]
+    rm_cols = ["Nombre", "Categoría", "Stock", "Unidad de Medida", "Estado"]
     rm_rows = [
         {
-            "cells": [item.id, item.name, item.category.name if item.category else "-", item.stock.amount if item.stock else 0, item.record_status],
+            "cells": [item.name, item.category.name if item.category else "-", item.stock.amount if item.stock else 0, item.uom, item.record_status],
             "data": {
                 "id": item.id,
                 "name": item.name,
                 "category_id": item.category_id,
                 "amount": item.stock.amount if item.stock else 0,
+                "uom": item.uom,
                 "record_status": item.record_status
             },
         }
         for item in raw_materials
     ]
 
-    cat_cols = ["ID", "Nombre", "Estado"]
+    cat_cols = ["Nombre", "Estado"]
     cat_rows = [
         {
-            "cells": [cat.id, cat.name, cat.record_status],
+            "cells": [cat.name, cat.record_status],
             "data": {
                 "id": cat.id,
                 "name": cat.name,
@@ -62,7 +63,8 @@ def render_raw_materials():
                 "form_template": "forms/raw_materials_form.html",
                 "main_content": True,
                 "get_form_action": url_for("raw_materials.render_raw_materials"),
-                "pagination": pagination_rm
+                "pagination": pagination_rm,
+                "search_value": request.args.get("raw-materials_search", type=str, default=""),
             },
             {
                 "id": "raw-material-categories",
@@ -73,7 +75,8 @@ def render_raw_materials():
                 "form_template": "forms/raw_categories_form.html",
                 "secondary_content": True,
                 "get_form_action": url_for("raw_materials.render_raw_materials"),
-                "pagination": pagination_rmc
+                "pagination": pagination_rmc,
+                "search_value": request.args.get("raw-material-categories_search", type=str, default=""),
             },
         ],
 
@@ -108,6 +111,7 @@ def update(raw_material_id: int):
     updates = {
         "name": request.form.get("name", type=str),
         "category_id": request.form.get("category_id", type=int),
+        "uom": request.form.get("uom", type=str),
     }
     update_raw_material(raw_material_id, updates)
     flash_message("Materia prima actualizada correctamente.", category="success")

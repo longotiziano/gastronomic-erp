@@ -35,6 +35,12 @@ def update_raw_material(raw_material_id: int, updates: dict) -> None:
             raise ValidationError("El nombre de la materia prima es requerido.")
         processed_updates["name"] = name
 
+    if updates.get("uom"):
+        uom = clean_string(updates["uom"])
+        if uom not in ["gr", "ml", "unit", "kg", "l"]:
+            raise ValidationError("Unidad de medida inválida. Debe ser 'gr', 'ml', 'unit', 'kg' o 'l'.")
+        processed_updates["uom"] = uom
+
     if updates.get("category_id"):
         category = _category_repo.get_by_id(updates["category_id"])
         if category is None:

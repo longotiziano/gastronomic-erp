@@ -17,10 +17,10 @@ def render_users():
     bars = obtain_bars()
     users: list[User] = pagination.items
 
-    cols = ['ID', 'Nombre', 'Email', 'Dirección', 'Rol', 'Salario diario', 'Bar', 'Fecha de creación', 'Estado']
+    cols = ['Nombre', 'Email', 'Dirección', 'Rol', 'Salario diario', 'Bar', 'Fecha de creación', 'Estado']
     rows = [
         {
-            "cells": [u.id, u.name, u.email, u.address or "-", u.rol.value,
+            "cells": [u.name, u.email, u.address or "-", u.rol.value,
                     u.daily_salary, u.bar.name, format_date(u.created_at), u.record_status],
             "data": {
                 "id": u.id,

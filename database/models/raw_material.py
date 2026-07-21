@@ -22,8 +22,9 @@ class RawMaterial(db.Model):
     name = db.Column(db.String(150), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("raw_material_categories.id"), nullable=False)
     record_status = db.Column(db.Boolean, default=True, nullable=False)
+    uom = db.Column(db.String(20), nullable=False, default="gr")   # Unit of measure, e.g. gr, ml, unit
 
-    filterable_fields = ["name", "category_id", "record_status"]
+    filterable_fields = ["name", "category_id", "record_status", "uom"]
 
     # Relationships
     category = db.relationship("RawMaterialCategory", back_populates="raw_materials")

@@ -13,10 +13,10 @@ bars_bp = Blueprint("bars", __name__)
 @admin_required
 def render_bars():
     bars = obtain_bars()
-    cols = ["ID", "Nombre", "Dirección", "Fecha de creación", "Estado"]
+    cols = ["Nombre", "Dirección", "Fecha de creación", "Estado"]
     rows = [
         {
-            "cells": [bar.id, bar.name, bar.address or "-", bar.created_at.strftime("%d-%m-%Y"), bar.record_status],
+            "cells": [bar.name, bar.address or "-", bar.created_at.strftime("%d-%m-%Y"), bar.record_status],
             "data": {
                 "id": bar.id,
                 "name": bar.name,

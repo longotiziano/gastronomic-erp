@@ -39,7 +39,7 @@ style="align-items: stretch; justify-content: center;"
     {% if table.main_content %}
     style="flex: 1;"
     {% elif table.secondary_content %}
-    style="flex: 0.5;"
+    style="flex: 0.7;"
     {% endif %}
     >
         {{ render_table(table) }}
@@ -50,4 +50,5 @@ style="align-items: stretch; justify-content: center;"
     {% endfor %}
     <div class="overlay" id="overlay"></div>
 </main>
+<script src="{{ url_for('static', filename='js/filters.js') }}"></script>
 {% endblock %}

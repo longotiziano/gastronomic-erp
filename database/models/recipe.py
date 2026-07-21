@@ -8,7 +8,6 @@ class Recipe(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey("products.id"), nullable=False)
     raw_material_id = db.Column(db.Integer, db.ForeignKey("raw_materials.id"), nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    uom = db.Column(db.String(20), nullable=False, default="gr")   # Unit of measure, e.g. gr, ml, unit
 
     # Relationships
     product = db.relationship("Product", back_populates="recipes")
@@ -17,5 +16,5 @@ class Recipe(db.Model):
     def __repr__(self):
         return (
             f"<Recipe id={self.id} product_id={self.product_id} "
-            f"raw_material_id={self.raw_material_id} amount={self.amount}{self.uom}>"
+            f"raw_material_id={self.raw_material_id} amount={self.amount}{self.raw_material.uom}>"
         )

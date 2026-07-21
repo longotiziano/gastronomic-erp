@@ -12,7 +12,7 @@
     pagination: objeto con .page, .pages, .has_prev, .has_next, .per_page (opcional)
 #}
 {% macro render_table(table) %}
-    <form action="{{ get_form_action }}" method="GET">    
+    <form action="{{ get_form_action }}" method="GET" class="search-form">    
     <div class="block-header">
         <h2>{{ table.title }}</h2>    
         <div class="block border flex-block flex-main-content">
@@ -58,7 +58,7 @@
                     <td>{{ cell }}</td>
                     {% endif %}
                 {% endfor %}
-                <td>
+                <td hidden>
                     <button class="edit-btn btn-icon btn-edit"
                         {% for key, value in row.data.items() %}data-{{ key }}="{{ value }}" {% endfor %}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil">
