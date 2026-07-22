@@ -30,11 +30,14 @@ class BaseRepository(Generic[T]):
         """Return a single record by primary key, or None if not found."""
         return db.session.get(self.model, id)
 
-    def record_exists(self, col_name: str, check_value, exclude_id: Optional[int] = None) -> bool:
-        column = getattr(self.model, col_name)
-        query = db.session.query(self.model).filter(column == check_value)
-        if exclude_id is not None and hasattr(self.model, "id"):
-            query = query.filter(self.model.id != exclude_id) # type: ignore
+    def record_exists(self, col_name: str, check_value, exclude_id: Optional[int] = None, model=None) -> bool:
+        if model is None:
+            model = self.model
+
+        column = getattr(model, col_name)
+        query = db.session.query(model).filter(column == check_value)
+        if exclude_id is not None and hasattr(model, "id"):
+            query = query.filter(model.id != exclude_id) # type: ignore
         return db.session.query(query.exists()).scalar()
     
     def get_all(self, active_only: bool = True) -> list[T]:

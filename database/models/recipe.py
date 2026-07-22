@@ -7,7 +7,9 @@ class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey("products.id"), nullable=False)
     raw_material_id = db.Column(db.Integer, db.ForeignKey("raw_materials.id"), nullable=False)
-    amount = db.Column(db.Float, nullable=False)
+    amount = db.Column(db.Float, nullable=False, info={
+        "min_value": 0.0
+    })
 
     # Relationships
     product = db.relationship("Product", back_populates="recipes")

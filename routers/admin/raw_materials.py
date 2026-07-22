@@ -1,106 +1,44 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 
-from database.models.raw_material import RawMaterial, RawMaterialCategory
-from services.bars import obtain_bars
-from services.raw_materials import  create_raw_material, obtain_raw_materials, update_raw_material, alt_raw_material_status
-from services.raw_materials_categories import obtain_raw_material_categories, create_raw_material_category, update_raw_material_category, alt_raw_material_category_status
+from services.raw_materials import RawMaterialService, RawMaterialCategoryService
 from utils.auth_decorator import admin_required
-from utils.exceptions import ValidationError
 from utils.flashes import flash_message
 from utils.helpers import is_admin
 
 raw_materials_bp = Blueprint("raw_materials", __name__)
+rm_service = RawMaterialService()
+rmc_service = RawMaterialCategoryService()
 
 @raw_materials_bp.get("/raw-materials")
 @admin_required
 def render_raw_materials():
-    pagination_rm = obtain_raw_materials()
-    pagination_rmc = obtain_raw_material_categories()
-    raw_materials: list[RawMaterial] = pagination_rm.items
-    categories: list[RawMaterialCategory] = pagination_rmc.items
+    # 1. Traemos la paginación aplicando filtros de la URL
+    pagination_rm = rm_service.filter_sort()
+    pagination_rmc = rmc_service.filter_sort()
     
-
-    rm_cols = ["Nombre", "Categoría", "Stock", "Unidad de Medida", "Estado"]
-    rm_rows = [
-        {
-            "cells": [item.name, item.category.name if item.category else "-", item.stock.amount if item.stock else 0, item.uom, item.record_status],
-            "data": {
-                "id": item.id,
-                "name": item.name,
-                "category_id": item.category_id,
-                "amount": item.stock.amount if item.stock else 0,
-                "uom": item.uom,
-                "record_status": item.record_status
-            },
-        }
-        for item in raw_materials
-    ]
-
-    cat_cols = ["Nombre", "Estado"]
-    cat_rows = [
-        {
-            "cells": [cat.name, cat.record_status],
-            "data": {
-                "id": cat.id,
-                "name": cat.name,
-                "record_status": cat.record_status,
-            },
-        }
-        for cat in categories
-    ]
+    # 2. El service arma la metadata visual usando self.repo.model internamente
+    table_rm = rm_service.get_table_metadata(pagination_rm, is_main=True)
+    table_rmc = rmc_service.get_table_metadata(pagination_rmc, is_main=False)
+    
+    # 3. Seteamos la acción del formulario al path actual
+    table_rm["get_form_action"] = request.path
+    table_rmc["get_form_action"] = request.path
 
     return render_template(
         "abm/raw_materials.html",
         page_title="Administrar materias primas",
-        tables=[
-            {
-                "id": "raw-materials",
-                "title": "Materias primas",
-                "cols": rm_cols,
-                "rows": rm_rows,
-                "plus_label": "Agregar materia prima",
-                "pagination": None,
-                "form_template": "forms/raw_materials_form.html",
-                "main_content": True,
-                "get_form_action": url_for("raw_materials.render_raw_materials"),
-                "pagination": pagination_rm,
-                "search_value": request.args.get("raw-materials_search", type=str, default=""),
-            },
-            {
-                "id": "raw-material-categories",
-                "title": "Categorías",
-                "cols": cat_cols,
-                "rows": cat_rows,
-                "pagination": None,
-                "form_template": "forms/raw_categories_form.html",
-                "secondary_content": True,
-                "get_form_action": url_for("raw_materials.render_raw_materials"),
-                "pagination": pagination_rmc,
-                "search_value": request.args.get("raw-material-categories_search", type=str, default=""),
-            },
-        ],
-
-        categories=categories,  # para el <select> del form de materia prima
+        tables=[table_rm, table_rmc],
+        categories=rmc_service.repo.get_all(), # Para poblar el select del modal
         deactivate_row=True,
         is_modal=True,
         abm_mode=True,
-        form_action='users/update',
         is_admin=is_admin()
     )
-
-
-# --- Materias primas ---
 
 @raw_materials_bp.post("/raw-materials/create")
 @admin_required
 def create():
-    name = request.form.get("name", type=str)
-    category_id = request.form.get("category_id", type=int)
-
-    if not name or not category_id:
-        raise ValidationError("Nombre y categoría son requeridos.")
-
-    create_raw_material(name=name, category_id=category_id)
+    rm_service.create(**request.form.to_dict())
     flash_message("Materia prima creada correctamente.", category="success")
     return redirect(url_for("raw_materials.render_raw_materials"))
 
@@ -108,12 +46,7 @@ def create():
 @raw_materials_bp.post("/raw-materials/update/<int:raw_material_id>")
 @admin_required
 def update(raw_material_id: int):
-    updates = {
-        "name": request.form.get("name", type=str),
-        "category_id": request.form.get("category_id", type=int),
-        "uom": request.form.get("uom", type=str),
-    }
-    update_raw_material(raw_material_id, updates)
+    rm_service.update(raw_material_id, request.form.to_dict())
     flash_message("Materia prima actualizada correctamente.", category="success")
     return redirect(url_for("raw_materials.render_raw_materials"))
 
@@ -121,7 +54,7 @@ def update(raw_material_id: int):
 @raw_materials_bp.post("/raw-materials/alt_status/<int:raw_material_id>")
 @admin_required
 def alt_status(raw_material_id: int):
-    alt_raw_material_status(raw_material_id)
+    rm_service.alt_status(raw_material_id)
     flash_message("Estado de la materia prima actualizado correctamente.", category="success")
     return redirect(url_for("raw_materials.render_raw_materials"))
 
@@ -129,12 +62,7 @@ def alt_status(raw_material_id: int):
 @raw_materials_bp.post("/raw-materials/categories/create")
 @admin_required
 def create_category():
-    name = request.form.get("name", type=str)
-
-    if not name:
-        raise ValidationError("El nombre de la categoría es requerido.")
-
-    create_raw_material_category(name=name)
+    rmc_service.create(**request.form.to_dict())
     flash_message("Categoría creada correctamente.", category="success")
     return redirect(url_for("raw_materials.render_raw_materials"))
 
@@ -142,10 +70,7 @@ def create_category():
 @raw_materials_bp.post("/raw-materials/categories/update/<int:category_id>")
 @admin_required
 def update_category(category_id: int):
-    updates = {
-        "name": request.form.get("name", type=str),
-    }
-    update_raw_material_category(category_id, updates)
+    rmc_service.update(category_id, request.form.to_dict())
     flash_message("Categoría actualizada correctamente.", category="success")
     return redirect(url_for("raw_materials.render_raw_materials"))
 
@@ -153,6 +78,6 @@ def update_category(category_id: int):
 @raw_materials_bp.post("/raw-materials/categories/alt_status/<int:category_id>")
 @admin_required
 def alt_status_category(category_id: int):
-    alt_raw_material_category_status(category_id)
+    rmc_service.alt_status(category_id)
     flash_message("Estado de la categoría actualizado correctamente.", category="success")
     return redirect(url_for("raw_materials.render_raw_materials"))

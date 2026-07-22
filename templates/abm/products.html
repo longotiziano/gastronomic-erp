@@ -1,0 +1,24 @@
+{% extends 'abm/abm.html' %}
+
+{% block area_js %}
+<script type="module">
+import { setupCrudModal } from "{{ url_for('static', filename='js/abm/crud.js') }}";
+import "{{ url_for('static', filename='js/abm/products.js') }}";
+
+setupCrudModal(
+    document.querySelector('[data-abm="products"]'),
+    { name: 'name', category_id: 'category_id', price: 'price', bar_id: 'bar_id', recipe_raw_material_id: 'recipe_raw_material_id', recipe_amount: 'recipe_amount' },
+    "/products/create",
+    "/products/update",
+    "/products/alt_status"
+);
+
+setupCrudModal(
+    document.querySelector('[data-abm="product-categories"]'),
+    { name: 'name', sector: 'sector' },
+    "/products/categories/create",
+    "/products/categories/update",
+    "/products/categories/alt_status"
+);
+</script>
+{% endblock %}

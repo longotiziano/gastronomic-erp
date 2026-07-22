@@ -1,20 +1,23 @@
 from flask import Blueprint, redirect, url_for, render_template, request, session, jsonify
 
 from database.models.user import User
+from database.repositories.bars import BarRepository
+from database.repositories.users import UserRepository
 from utils.auth_decorator import admin_required
-from services.users import alt_user_status, obtain_users, create_user, update_user
-from services.bars import obtain_bars
+from services.base_service import BaseCrudService
 from utils.exceptions import ValidationError
 from utils.flashes import flash_message
 from utils.helpers import format_date, is_admin
 
 users_bp = Blueprint("users", __name__, )
+users_service = BaseCrudService(repo=UserRepository(), entity_name="usuario")  # Placeholder for the actual repository
+bars_service = BaseCrudService(repo=BarRepository(), entity_name="bar")  # Placeholder for the actual repository
 
 @users_bp.get("/users")
 @admin_required
 def render_users():
-    pagination = obtain_users()
-    bars = obtain_bars()
+    pagination = users_service.filter_sort("users")
+    bars = bars_service.repo.get_all(active_only=True)
     users: list[User] = pagination.items
 
     cols = ['Nombre', 'Email', 'Dirección', 'Rol', 'Salario diario', 'Bar', 'Fecha de creación', 'Estado']
@@ -61,41 +64,20 @@ def render_users():
 @users_bp.post("/users/create")
 @admin_required
 def create():
-    name = request.form.get("name", type=str)
-    email = request.form.get("email", type=str)
-    password = request.form.get("password", type=str)
-    rol = request.form.get("rol", type=str, default="waiter")
-    daily_salary = request.form.get("daily_salary", type=float, default=0.0)
-    address = request.form.get("address", type=str)
-    bar = request.form.get("bar_id", type=int)
-    print(f"\nEL BAR ES {bar}\n")
-    print(f"\nES INT: {isinstance(bar, int)}\n")
-    if not name or not email or not password or not bar:
-        raise ValidationError("Nombre, email, contraseña y bar son requeridos.")
-
-    create_user(name, email, password, bar, rol, address, daily_salary)
+    users_service.create(**request.form.to_dict())
     flash_message("Usuario creado correctamente.", category="success")
     return redirect(url_for("users.render_users"))
 
 @users_bp.post("/users/update/<int:user_id>")
 @admin_required
 def update(user_id: int):
-    updates = {
-        "name": request.form.get("name", type=str),
-        "email": request.form.get("email", type=str),
-        "password": request.form.get("password", type=str),
-        "rol": request.form.get("rol", type=str),
-        "daily_salary": request.form.get("daily_salary", type=float),
-        "address": request.form.get("address", type=str),
-        "bar_id": request.form.get("bar_id", type=int)
-    }
-    update_user(user_id, updates)
+    users_service.update(user_id, request.form.to_dict())
     flash_message("Usuario actualizado correctamente.", category="success")
     return redirect(url_for("users.render_users"))
 
 @users_bp.post("/users/alt_status/<int:user_id>")
 @admin_required
 def alt_status(user_id: int):
-    alt_user_status(user_id)
+    users_service.alt_status(user_id)
     flash_message("Estado del usuario actualizado correctamente.", category="success")
     return redirect(url_for("users.render_users"))

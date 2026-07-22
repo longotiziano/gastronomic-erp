@@ -11,9 +11,13 @@ class ProductCategory(db.Model):
     __tablename__ = "product_categories"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False, info={
+        "title": True
+    })
     sector = db.Column(db.Enum(ProductSector), nullable=False)
     record_status = db.Column(db.Boolean, default=True, nullable=False)
+
+    filterable_fields = ["name", "sector", "record_status"]
 
     # Relationships
     products = db.relationship("Product", back_populates="category", lazy="dynamic")
@@ -26,11 +30,17 @@ class Product(db.Model):
     __tablename__ = "products"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150), nullable=False)
+    name = db.Column(db.String(150), nullable=False, info={
+        "title": True
+    })
     category_id = db.Column(db.Integer, db.ForeignKey("product_categories.id"), nullable=False)
-    price = db.Column(db.Float, nullable=False)
+    price = db.Column(db.Float, nullable=False, info={
+        "min_value": 0.0
+    })
     bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=False)
     record_status = db.Column(db.Boolean, default=True, nullable=False)
+
+    filterable_fields = ["name", "category_id", "bar_id", "record_status"]
 
     # Relationships
     category = db.relationship("ProductCategory", back_populates="products")

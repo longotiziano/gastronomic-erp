@@ -45,6 +45,8 @@ def create_app(config_object="config.Config"):
     app.register_blueprint(bars_bp)
     from routers.admin.raw_materials import raw_materials_bp
     app.register_blueprint(raw_materials_bp)
+    from routers.admin.products import products_bp
+    app.register_blueprint(products_bp)
 
     return app
 

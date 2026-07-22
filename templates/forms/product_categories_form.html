@@ -1,0 +1,16 @@
+{% extends 'partials/general_form.html' %}
+
+{% block form_content %}
+<div class="form-group">
+    <label for="name">Nombre de la categoría:</label>
+    <input type="text" id="name" name="name" required>
+</div>
+
+<div class="form-group">
+    <label for="sector">Sector:</label>
+    <select id="sector" name="sector" required>
+        <option value="kitchen">Cocina</option>
+        <option value="bar">Bar</option>
+    </select>
+</div>
+{% endblock %}

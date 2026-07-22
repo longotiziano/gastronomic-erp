@@ -1,9 +1,10 @@
 from flask import Blueprint, redirect, render_template, request, session, url_for
 
-from services.users import login_user
+from services.users import UserService
 from utils.flashes import flash_message
 
 auth_bp = Blueprint("auth", __name__, )
+user_service = UserService()
 
 @auth_bp.get("/auth/login")
 def login():
@@ -17,7 +18,7 @@ def login_post():
         flash_message("Error en el inicio de sesión", "Email y contraseña son requeridos", "error")
         return _login_context()
     
-    user = login_user(email, password)
+    user = user_service.login(email, password)
     if not user:
         flash_message("Error en el inicio de sesión", "Email o contraseña incorrectos", "error")
         return _login_context()

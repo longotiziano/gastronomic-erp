@@ -5,7 +5,7 @@
 import { setupCrudModal } from "{{ url_for('static', filename='js/abm/crud.js') }}";
 
 setupCrudModal(
-    document.querySelector('[data-abm="raw-materials"]'),
+    document.querySelector('[data-abm="raw_materials"]'),
     { name: 'name', category_id: 'category_id' },
     "/raw-materials/create",
     "/raw-materials/update",
@@ -13,7 +13,7 @@ setupCrudModal(
 );
 
 setupCrudModal(
-    document.querySelector('[data-abm="raw-material-categories"]'),
+    document.querySelector('[data-abm="raw_material_categories"]'),
     { name: 'name' },
     "/raw-materials/categories/create",
     "/raw-materials/categories/update",

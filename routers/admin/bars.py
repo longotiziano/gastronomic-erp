@@ -1,18 +1,19 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 
-from services.bars import alt_bar_status, create_bar, obtain_bars, update_bar
+from services.base_service import BaseCrudService
+from database.repositories.bars import BarRepository
 from utils.auth_decorator import admin_required
 from utils.exceptions import ValidationError
 from utils.flashes import flash_message
 from utils.helpers import is_admin
 
 bars_bp = Blueprint("bars", __name__)
-
+bars_service = BaseCrudService(BarRepository(), entity_name="bar")
 
 @bars_bp.get("/bars")
 @admin_required
 def render_bars():
-    bars = obtain_bars()
+    bars = bars_service.filter_sort("bars")
     cols = ["Nombre", "Dirección", "Fecha de creación", "Estado"]
     rows = [
         {
@@ -51,13 +52,7 @@ def render_bars():
 @bars_bp.post("/bars/create")
 @admin_required
 def create():
-    name = request.form.get("name", type=str)
-    address = request.form.get("address", type=str)
-
-    if not name:
-        raise ValidationError("El nombre del bar es requerido.")
-
-    create_bar(name=name, address=address) # type: ignore
+    bars_service.create(**request.form.to_dict())
     flash_message("Bar creado correctamente.", category="success")
     return redirect(url_for("bars.render_bars"))
 
@@ -65,11 +60,7 @@ def create():
 @bars_bp.post("/bars/update/<int:bar_id>")
 @admin_required
 def update(bar_id: int):
-    updates = {
-        "name": request.form.get("name", type=str),
-        "address": request.form.get("address", type=str),
-    }
-    update_bar(bar_id, updates)
+    bars_service.update(bar_id, request.form.to_dict())
     flash_message("Bar actualizado correctamente.", category="success")
     return redirect(url_for("bars.render_bars"))
 
@@ -77,6 +68,6 @@ def update(bar_id: int):
 @bars_bp.post("/bars/alt_status/<int:bar_id>")
 @admin_required
 def alt_status(bar_id: int):
-    alt_bar_status(bar_id)
+    bars_service.alt_status(bar_id)
     flash_message("Estado del bar actualizado correctamente.", category="success")
     return redirect(url_for("bars.render_bars"))

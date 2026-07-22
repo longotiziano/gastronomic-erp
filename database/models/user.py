@@ -18,13 +18,21 @@ class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150), nullable=False)
+    name = db.Column(db.String(150), nullable=False, info={
+        "title": True
+    })
     email = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    address = db.Column(db.String(255), nullable=True)
+    password = db.Column(db.String(255), nullable=False, info={
+        "min_length": 8
+    })
+    address = db.Column(db.String(255), nullable=True, info={
+        "title": True
+    })
     rol = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.waiter)
     leave_at = db.Column(db.DateTime, nullable=True)
-    daily_salary = db.Column(db.Float, nullable=False, default=0.0)
+    daily_salary = db.Column(db.Float, nullable=False, default=0.0, info={
+        "min_value": 0.0
+    })
     bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     record_status = db.Column(db.Boolean, default=True, nullable=False)
