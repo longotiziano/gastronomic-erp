@@ -40,12 +40,15 @@ class BaseRepository(Generic[T]):
             query = query.filter(model.id != exclude_id) # type: ignore
         return db.session.query(query.exists()).scalar()
     
-    def get_all(self, active_only: bool = True) -> list[T]:
+    def get_all(self, active_only: bool = True, model=None) -> list[T]:
         """
         Return all records.
         If the model has record_status, filter by active records by default.
         """
-        query = db.session.query(self.model)
+        if model is None:
+            model = self.model
+            
+        query = db.session.query(model)
         if active_only and hasattr(self.model, "record_status"):
             query = query.filter(self.model.record_status == True)  # noqa: E712 # type: ignore
         return query.all()

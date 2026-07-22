@@ -1,47 +1,26 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 
-from services.base_service import BaseCrudService
-from database.repositories.bars import BarRepository
+from services.bars import BarService
 from utils.auth_decorator import admin_required
-from utils.exceptions import ValidationError
 from utils.flashes import flash_message
 from utils.helpers import is_admin
 
 bars_bp = Blueprint("bars", __name__)
-bars_service = BaseCrudService(BarRepository(), entity_name="bar")
+bars_service = BarService()
 
 @bars_bp.get("/bars")
 @admin_required
 def render_bars():
-    bars = bars_service.filter_sort("bars")
-    cols = ["Nombre", "Dirección", "Fecha de creación", "Estado"]
-    rows = [
-        {
-            "cells": [bar.name, bar.address or "-", bar.created_at.strftime("%d-%m-%Y"), bar.record_status],
-            "data": {
-                "id": bar.id,
-                "name": bar.name,
-                "address": bar.address or "",
-                "record_status": bar.record_status,
-            },
-        }
-        for bar in bars
-    ]
+    pagination_bars = bars_service.filter_sort()
+    
+    table_bars = bars_service.get_table_metadata(pagination_bars, is_main=True)
+    
+    table_bars["get_form_action"] = request.path
 
     return render_template(
         "abm/bars.html",
         page_title="Administrar bares",
-        tables=[
-            {
-                "id": "bars",
-                "title": "Bares",
-                "cols": cols,
-                "rows": rows,
-                "pagination": None,
-                "form_template": "forms/bars_form.html",
-            }
-        ],
-
+        tables=[table_bars],
         deactivate_row=True,
         is_modal=True,
         abm_mode=True,

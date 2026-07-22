@@ -3,7 +3,7 @@ import os
 from flask import Flask
 from database import db
 import database.models  # noqa: F401 — registers all models with SQLAlchemy
-from seed_data import load_initial_data
+from data_seed import load_initial_data
 from utils.error_handlers import register_error_handlers
 
 def create_app(config_object="config.Config"):

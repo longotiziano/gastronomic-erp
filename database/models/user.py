@@ -16,6 +16,13 @@ class UserRole(enum.Enum):
 
 class User(db.Model):
     __tablename__ = "users"
+    entity_name = "usuario"
+
+    ui_config = {
+        "title": "Usuarios",
+        "form_template": "forms/auth_form.html",
+        "table_cols": ["Nombre", "Email", "Rol", "Salario Diario", "Bar", "Estado"]
+    }
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False, info={
@@ -54,6 +61,16 @@ class User(db.Model):
         back_populates="manager",
         lazy="dynamic",
     )
+
+    def to_table_row(self) -> list:
+        return [
+            self.name,
+            self.email,
+            self.rol.value if hasattr(self.rol, "value") else self.rol,
+            f"${self.daily_salary:.2f}",
+            self.bar.name if self.bar else "-",
+            self.record_status,
+        ]
 
     def is_active(self) -> bool:
         return self.leave_at is None

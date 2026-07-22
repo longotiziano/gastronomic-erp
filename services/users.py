@@ -9,8 +9,10 @@ from utils.helpers import clean_string
 class UserService(BaseCrudService):
     repo: UserRepository
     
+    
     def __init__(self):
-        super().__init__(UserRepository(), entity_name="usuario")
+        super().__init__(UserRepository())
+
 
     def _generate_password_hash(self, password: str) -> str:
             if len(password) >= 8:
@@ -20,6 +22,9 @@ class UserService(BaseCrudService):
 
 
     def create(self, **data) -> User:
+        if data.get("confirm_password"):
+            del data["confirm_password"]
+            
         email = data.get("email")
         password = data.get("password")
         if email and password:
@@ -31,6 +36,9 @@ class UserService(BaseCrudService):
     
 
     def update(self, entity_id: int, data: dict) -> User:
+        if data.get("confirm_password"):
+            del data["confirm_password"]
+        
         email = data.get("email")
         password = data.get("password")
         if email:

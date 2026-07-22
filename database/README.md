@@ -8,6 +8,7 @@ Created for code's abstraction
 
 ### Miscellaneous
 - filterable_fields: list = Fields that can be selected to sort or filter records.
+- entity_name: str = How the record is displayed in error messages
 
 ### Info 
 - min_value: int

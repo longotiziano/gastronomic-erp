@@ -3,8 +3,8 @@ from database.repositories.raw_materials import RawMaterialRepository, RawMateri
 
 class RawMaterialService(BaseCrudService):
     def __init__(self):
-        super().__init__(RawMaterialRepository(), entity_name="materia prima")
+        super().__init__(RawMaterialRepository())
 
 class RawMaterialCategoryService(BaseCrudService):
     def __init__(self):
-        super().__init__(RawMaterialCategoryRepository(), entity_name="categoría de materia prima")
+        super().__init__(RawMaterialCategoryRepository())

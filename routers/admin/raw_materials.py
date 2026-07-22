@@ -12,15 +12,12 @@ rmc_service = RawMaterialCategoryService()
 @raw_materials_bp.get("/raw-materials")
 @admin_required
 def render_raw_materials():
-    # 1. Traemos la paginación aplicando filtros de la URL
     pagination_rm = rm_service.filter_sort()
     pagination_rmc = rmc_service.filter_sort()
     
-    # 2. El service arma la metadata visual usando self.repo.model internamente
     table_rm = rm_service.get_table_metadata(pagination_rm, is_main=True)
     table_rmc = rmc_service.get_table_metadata(pagination_rmc, is_main=False)
     
-    # 3. Seteamos la acción del formulario al path actual
     table_rm["get_form_action"] = request.path
     table_rmc["get_form_action"] = request.path
 
@@ -28,7 +25,7 @@ def render_raw_materials():
         "abm/raw_materials.html",
         page_title="Administrar materias primas",
         tables=[table_rm, table_rmc],
-        categories=rmc_service.repo.get_all(), # Para poblar el select del modal
+        categories=rmc_service.repo.get_all(),
         deactivate_row=True,
         is_modal=True,
         abm_mode=True,

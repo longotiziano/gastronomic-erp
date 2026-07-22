@@ -22,7 +22,7 @@ class BaseValidator:
     # ORQUESTADOR
     # =========================================================
 
-    def validate(self, data: dict, check_required_fields: bool = True) -> None:
+    def validate(self, data: dict, check_required_fields: bool = True, exclude_id: int = None) -> None: # type: ignore
         """
         Executes the full automated validation pipeline sequentially.
         Modifies data dict in-place for text normalization.
@@ -34,7 +34,7 @@ class BaseValidator:
             self._validate_required_fields(data)
 
         if self.repo:
-            self._validate_unique_fields(data, self.entity_name)
+            self._validate_unique_fields(data, self.entity_name, exclude_id=exclude_id)
             self._validate_foreign_keys(data)
 
         self._validate_field_constraints(data)
@@ -133,12 +133,12 @@ class BaseValidator:
             if field not in data or data[field] is None or str(data[field]).strip() == '':
                 raise ValidationError(f"El campo '{field}' es obligatorio.")
 
-    def _validate_unique_fields(self, data: dict, entity_name: str) -> None:
+    def _validate_unique_fields(self, data: dict, entity_name: str, exclude_id: int = None) -> None: # type: ignore
         """Valida que los campos únicos no estén duplicados en el repositorio."""
         for field in self._obtain_unique_fields():
             if field in data and data[field] is not None:
                 valor_a_chequear = data[field]
-                if self.repo.record_exists(field, valor_a_chequear):
+                if self.repo.record_exists(field, valor_a_chequear, exclude_id=exclude_id):
                     raise ConflictError(
                         f"Ya se encuentra registrado un {entity_name} con el valor "
                         f"'{valor_a_chequear}' en el campo '{field.capitalize()}'."

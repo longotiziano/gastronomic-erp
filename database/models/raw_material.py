@@ -11,6 +11,7 @@ class Uom(enum.Enum):
 
 class RawMaterialCategory(db.Model):
     __tablename__ = "raw_material_categories"
+    entity_name = "categoría de materia prima"
 
     ui_config = {
         "title": "Categorías",
@@ -39,6 +40,7 @@ class RawMaterialCategory(db.Model):
 
 class RawMaterial(db.Model):
     __tablename__ = "raw_materials"
+    entity_name = "materia prima"
 
     ui_config = {
         "title": "Materias primas",

@@ -3,4 +3,4 @@ from database.repositories.bars import BarRepository
 
 class BarService(BaseCrudService):
     def __init__(self):
-        super().__init__(BarRepository(), entity_name="bar")
+        super().__init__(BarRepository())
