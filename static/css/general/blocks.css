@@ -55,11 +55,10 @@
     flex-direction: column;
     gap: 15px;
 
-    /* 🔴 AJUSTÁ ESTAS REGLAS */
-    flex: 1;            /* Ocupa todo el espacio sobrante */
-    min-height: 0;      /* Permite colapsar el contenido para activar scroll */
-    overflow-y: auto;   /* Scroll vertical si los registros exceden el alto */
-    overflow-x: auto;   /* Scroll horizontal si la tabla es muy ancha */
+    flex: 1;        
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: auto;   
 }
 
 .flex-block {
@@ -71,7 +70,7 @@
 .block-footer {
     overflow: hidden;
     position: relative;
-    padding: 20px;
+    padding: 1rem;;
     border-top: 2px solid rgba(124, 124, 124, 0.123);
     display: flex;
     gap: 10px;
@@ -111,6 +110,8 @@
 }
 
 .relative-block {
+    overflow-y: auto;
+    max-height: 50vh;
     animation: none; 
     z-index: 500;
     position: absolute;

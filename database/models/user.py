@@ -21,37 +21,52 @@ class User(db.Model):
     ui_config = {
         "title": "Usuarios",
         "form_template": "forms/auth_form.html",
-        "table_cols": ["Nombre", "Email", "Rol", "Salario Diario", "Bar", "Estado"]
+        "table_cols": ["Nombre", "Email", "Dirección", "Rol", "Salario Diario", "Bar", "Estado"]
     }
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False, info={
         "title": True,
-        "filter_type": "search"
+        "filter_type": "search",
+        "sort": True,
+        "label": "Nombre"
     })
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False, info={
         "min_length": 8
     })
     address = db.Column(db.String(255), nullable=True, info={
-        "title": True
+        "title": True,
+        "label": "Dirección",
+        "sort": True
     })
     rol = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.waiter, info={
         "filter_type": "select",
-        "label": "Puesto"
+        "label": "Puesto",
+        "sort": True
     })
-    leave_at = db.Column(db.DateTime, nullable=True)
+    leave_at = db.Column(db.DateTime, nullable=True, info={
+        "label": "Fecha de Despido",
+        "sort": True
+    })
     daily_salary = db.Column(db.Float, nullable=False, default=0.0, info={
-        "min_value": 0.0
+        "min_value": 0.0,
+        "label": "Salario diario",
+        "sort": True
     })
     bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=True, info={
         "label": "Bar",
-        "filter_type": "select_fk"
+        "filter_type": "select_fk",
+        "sort": True
     })
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False, info={
+        "label": "Fecha de creación",
+        "sort": True
+    })
     record_status = db.Column(db.Boolean, default=True, nullable=False, info={
         "label": "Estado",
-        "filter_type": "bool"
+        "filter_type": "bool",
+        "sort": True
     })
 
     filterable_fields = ["name", "email", "rol", "bar_id", "record_status"]
@@ -76,6 +91,7 @@ class User(db.Model):
         return [
             self.name,
             self.email,
+            self.address,
             self.rol.value if hasattr(self.rol, "value") else self.rol,
             f"${self.daily_salary:.2f}",
             self.bar.name if self.bar else "-",

@@ -41,6 +41,25 @@ class BaseCrudService(Generic[T]):
         return rows
 
 
+    def get_sorts_config(self) -> list[dict]:
+        """Genera la metadata de campos ordenables, leyendo 'sort' del info de cada columna."""
+        inspector = inspect(self.repo.model)
+        sorts = []
+
+        for column in inspector.column_attrs:  # type: ignore
+            col_info = column.expression.info or {}  # type: ignore
+            if not col_info.get("sort"):
+                continue
+
+            sorts.append({
+                "name": column.key,
+                "label": col_info.get("label", column.key.capitalize()),
+            })
+        for s in sorts:
+            print(s)
+        return sorts
+
+
     def get_filters_config(self) -> list[dict]:
         """Genera la metadata necesaria para renderizar los filtros en el HTML,
         leyendo el 'info' de cada columna del modelo."""
@@ -50,7 +69,6 @@ class BaseCrudService(Generic[T]):
         for column in inspector.column_attrs: # type: ignore
             col_info = column.expression.info or {}
             filter_type = col_info.get("filter_type")
-            print(f"{column} procesando filtro de {self.repo.model} donde es {filter_type}")
             if not filter_type:
                 continue
 
@@ -81,8 +99,6 @@ class BaseCrudService(Generic[T]):
                     ).all()
 
             filtros.append(config)
-        for f in filtros:
-            print(f)
         return filtros
     
 
@@ -136,6 +152,7 @@ class BaseCrudService(Generic[T]):
                 sorts[field] = (value == "desc")
 
         page = request.args.get(f"{prefix}page", 1, type=int)
+        print(f"Sorts procesados: {sorts}")
         return self.repo.get_filtered_sorted(
             search=search, filters=filters, sorts=sorts, page=page
         )

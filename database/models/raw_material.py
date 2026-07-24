@@ -57,19 +57,23 @@ class RawMaterial(db.Model):
     name = db.Column(db.String(150), nullable=False, unique=True, info={
         "title": True,
         "label": "Materia Prima",
-        "filter_type": "search"
+        "filter_type": "search",
+        "sort": True
     })
     category_id = db.Column(db.Integer, db.ForeignKey("raw_material_categories.id"), nullable=False, info={
         "label": "Categoría",
-        "filter_type": "select_fk"
+        "filter_type": "select_fk",
+        "sort": True
     })
     record_status = db.Column(db.Boolean, default=True, nullable=False, info={
         "label": "Estado",
-        "filter_type": "bool"
+        "filter_type": "bool",
+        "sort": True
     })
     uom = db.Column(db.Enum(Uom), nullable=False, default=Uom.gr, info={
         "label": "Unidad de Medida",
-        "filter_type": "select"
+        "filter_type": "select",
+        "sort": True
     })
 
     filterable_fields = ["category_id", "record_status", "uom"]

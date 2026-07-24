@@ -16,11 +16,13 @@ class Bar(db.Model):
     name = db.Column(db.String(100), nullable=False, unique=True, info={
         "title": True,
         "filter_type": "search",
-        "sort": True
+        "sort": True,
+        "label": "Nombre"
     })
     address = db.Column(db.String(255), nullable=True, info={
         "title": True,
-        "sort": True
+        "sort": True,
+        "label": "Dirección"
     })
     record_status = db.Column(db.Boolean, default=True, nullable=False, info={
         "label": "Estado",
@@ -28,7 +30,8 @@ class Bar(db.Model):
         "sort": True
     })
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False, info={
-        "sort": True
+        "sort": True,
+        "label": "Fecha de creación"
     })
 
     # Relationships

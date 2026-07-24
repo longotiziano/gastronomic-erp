@@ -63,7 +63,6 @@ class BaseRepository(Generic[T]):
     ) -> Pagination:
         filters = filters or {}
         sorts = sorts or {}
-        allowed = getattr(self.model, "filterable_fields", set())
         
         query = db.session.query(self.model)
 
@@ -75,15 +74,12 @@ class BaseRepository(Generic[T]):
                 query = query.filter(or_(*search_conditions))
 
         for k, v in filters.items():
-            if k not in allowed:
-                continue
             query = query.filter(getattr(self.model, k) == v)
 
         for field, descending in sorts.items():
-            if field not in allowed:
-                continue
             column = getattr(self.model, field)
             query = query.order_by(column.desc() if descending else column.asc())
+        print(query)
         return _paginate_query(query, page, per_page) # type: ignore
 
     def get_by_filter(self, **filters) -> list[T]:

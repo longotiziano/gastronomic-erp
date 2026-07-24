@@ -62,22 +62,27 @@ class Product(db.Model):
     name = db.Column(db.String(150), nullable=False, info={
         "title": True,
         "label": "Producto",
-        "filter_type": "search"
+        "filter_type": "search",
+        "sort": True
     })
     category_id = db.Column(db.Integer, db.ForeignKey("product_categories.id"), nullable=False, info={
         "label": "Categoría",
-        "filter_type": "select_fk"
+        "filter_type": "select_fk",
+        "sort": True
     })
     price = db.Column(db.Float, nullable=False, info={
-        "min_value": 0.0
+        "min_value": 0.0,
+        "sort": True
     })
     bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=False, info={
         "label": "Bar",
-        "filter_type": "select_fk"
+        "filter_type": "select_fk",
+        "sort": True
     })
     record_status = db.Column(db.Boolean, default=True, nullable=False, info={
         "label": "Estado",
-        "filter_type": "bool"
+        "filter_type": "bool",
+        "sort": True
     })
 
     filterable_fields = ["name", "category_id", "bar_id", "record_status"]

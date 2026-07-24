@@ -1,3 +1,21 @@
-.relative-block .form-group {
+.relative-block .form-group, .sort-panel span {
     font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.relative-block .form-group select, .relative-block {
+    font-size: 0.7rem;
+    padding: 0.4rem;
+}
+
+.sort-panel span {
+    white-space: nowrap;
+}
+
+.sort-panel {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border-bottom: 1px solid #dddddd43;
+    padding-bottom: 0.5rem;
 }

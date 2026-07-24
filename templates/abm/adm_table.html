@@ -33,7 +33,17 @@
                         <h3>Ordenar por</h3>
                     </div>
                     <div class="block-content">
-                        <!-- opciones de ordenamiento acá -->
+                    {% for orden in table.sorts %}
+                        {% set sort_param = table.id ~ '_sort_' ~ orden.name %}
+                        {% set current = request.args.get(sort_param) %}
+                        <div class="sort-panel">
+                            <span>{{ orden.label }}</span>
+                            <div style="display: flex; gap: 0.2rem; margin-left: 0.5rem;">
+                            <a href="?{{ sort_param }}=asc" class="{{ 'active' if current == 'asc' }}">↑</a>
+                            <a href="?{{ sort_param }}=desc" class="{{ 'active' if current == 'desc' }}">↓</a>
+                            </div>
+                        </div>
+                    {% endfor %}
                     </div>
                 </div>
             </div>

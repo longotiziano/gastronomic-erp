@@ -1,26 +1,3 @@
-.btn-icon {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 5px;
-    padding: 0.35rem;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: background 0.15s, border-color 0.15s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.btn-edit {
-    color: rgba(255, 255, 255, 0.75);
-}
-
-.btn-edit:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: #fff;
-}
-
 /* Tabla */
 .dishes-table {
     width: 100%;
