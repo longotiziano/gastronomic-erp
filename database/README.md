@@ -1,19 +1,33 @@
 # Database models
 
-## Special attributes
-Created for code's abstraction
+## DimensionalMixin
+All dimensional tables have both `id` and `name` fields. If a different label is used to name the column, the web page rendering may fail. This is the reason for the `DimensionalMixin` class.
 
-### Table's rendering
-- ui-config: dict = {title, form_template, table_cols (displayed in screen)}
+## Special attributes
+Created for code abstraction.
+
+### Table rendering
+- `ui_config: dict` = {
+    `title`, -> str, the page/section title displayed in the UI (e.g. "Categorías")
+    `form_template`, -> str, path to the form template used for create/edit
+    `table_cols` -> list[str], column headers displayed on screen
+}
 
 ### Miscellaneous
-- filterable_fields: list = Fields that can be selected to sort or filter records.
-- entity_name: str = How the record is displayed in error messages
+- `filterable_fields: list` = Fields that can be selected to sort or filter records.
+  > Note: as of the new filter system, filterable fields are detected automatically from columns that declare `filter_type` in their `info`. This list may become redundant — confirm whether it's still read anywhere before removing it.
+- `entity_name: str` = How the record is named in error messages (e.g. "materia prima").
 
-### Info 
-- min_value: int
-- title: bool = How the string record is stored in the database.
-- 
+### Column `info` dict
+- `title: bool` = Whether the string value gets normalized/title-cased on save (e.g. "juan perez" -> "Juan Perez"). Not related to `ui_config.title`.
+- `label: str` = Display name for the field in forms and filters (e.g. "Unidad de Medida").
+- `min_value: int` / `max_value: int` = Numeric bounds enforced during validation.
+- `filter_type: enum` = [
+    `'select'`, -> selectable with the column's Enum options
+    `'select_fk'`, -> selectable with the related dimensional table's `name` field
+    `'search'`, -> free-text search
+    `'bool'` -> selectable Sí/No (Activo/Inactivo)
+]
 
 ## Special methods
-- self.to_table_row() -> list = Returns a row of the rendered table
+- `to_table_row(self) -> list` = Returns a row of the rendered table.

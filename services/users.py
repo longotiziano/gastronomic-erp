@@ -1,4 +1,4 @@
-from database.models.user import User
+from database.models.user import User, UserRole
 from database.repositories.users import UserRepository
 from services.base_service import BaseCrudService
 from utils.exceptions import ValidationError
@@ -25,6 +25,10 @@ class UserService(BaseCrudService):
         if data.get("confirm_password"):
             del data["confirm_password"]
             
+        rol = data.get("rol")
+        if rol and isinstance(rol, UserRole):
+            data["rol"] = rol.value
+        
         email = data.get("email")
         password = data.get("password")
         if email and password:

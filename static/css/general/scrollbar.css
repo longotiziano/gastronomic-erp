@@ -1,0 +1,38 @@
+/* ==========================================
+   1. MÉTODOS ESTÁNDAR (Firefox / Chrome moderno)
+   ========================================== */
+* {
+    scrollbar-width: thin; /* 'auto' o 'thin' */
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent; /* [Color del thumb] [Color del track] */
+}
+
+/* ==========================================
+   2. WEBKIT (Chrome, Edge, Safari, Opera)
+   ========================================== */
+/* Ancho y alto de la barra */
+::-webkit-scrollbar {
+    width: 8px;  /* Para scroll vertical */
+    height: 8px; /* Para scroll horizontal */
+}
+
+/* El fondo por donde corre la barra */
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+
+/* La barra deslizante (thumb) */
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+/* Hover sobre la barra */
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Cuando se hace clic sobre la barra */
+::-webkit-scrollbar-thumb:active {
+    background-color: rgba(255, 255, 255, 0.5);
+}

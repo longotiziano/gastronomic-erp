@@ -1,13 +1,14 @@
 .btn-icon {
-    aspect-ratio: 1 / 1;
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 5px;
     padding: 0.35rem;
     cursor: pointer;
     font-size: 0.8rem;
-    font-family: Arial, sans-serif;
     transition: background 0.15s, border-color 0.15s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn-edit {

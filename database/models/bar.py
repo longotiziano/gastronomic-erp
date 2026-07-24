@@ -13,7 +13,7 @@ class Bar(db.Model):
     }
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, info={
+    name = db.Column(db.String(100), nullable=False, unique=True, info={
         "title": True
     })
     address = db.Column(db.String(255), nullable=True, info={

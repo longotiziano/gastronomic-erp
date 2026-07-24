@@ -21,9 +21,14 @@ class RawMaterialCategory(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False, info={
-        "title": True
+        "title": True,
+        "label": "Categoría",
+        "filter_type": "search"
     })
-    record_status = db.Column(db.Boolean, default=True, nullable=False)
+    record_status = db.Column(db.Boolean, default=True, nullable=False, info={
+        "label": "Estado",
+        "filter_type": "bool"
+    })
 
     # Relationships
     raw_materials = db.relationship("RawMaterial", back_populates="category", lazy="dynamic")
@@ -50,13 +55,24 @@ class RawMaterial(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False, unique=True, info={
-        "title": True
+        "title": True,
+        "label": "Materia Prima",
+        "filter_type": "search"
     })
-    category_id = db.Column(db.Integer, db.ForeignKey("raw_material_categories.id"), nullable=False)
-    record_status = db.Column(db.Boolean, default=True, nullable=False)
-    uom = db.Column(db.Enum(Uom), nullable=False, default=Uom.gr)
+    category_id = db.Column(db.Integer, db.ForeignKey("raw_material_categories.id"), nullable=False, info={
+        "label": "Categoría",
+        "filter_type": "select_fk"
+    })
+    record_status = db.Column(db.Boolean, default=True, nullable=False, info={
+        "label": "Estado",
+        "filter_type": "bool"
+    })
+    uom = db.Column(db.Enum(Uom), nullable=False, default=Uom.gr, info={
+        "label": "Unidad de Medida",
+        "filter_type": "select"
+    })
 
-    filterable_fields = ["name", "category_id", "record_status", "uom"]
+    filterable_fields = ["category_id", "record_status", "uom"]
 
     # Relationships
     category = db.relationship("RawMaterialCategory", back_populates="raw_materials")

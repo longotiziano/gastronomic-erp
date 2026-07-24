@@ -23,7 +23,7 @@
 }
 
 .x-btn:hover, .config-btn:hover,
-.config-btn:focus, .block-footer button:hover {
+.config-btn:focus, .block-footer .submit-btn:hover {
     background-color: rgba(240, 248, 255, 0.5);
     color: black;
     cursor: pointer;

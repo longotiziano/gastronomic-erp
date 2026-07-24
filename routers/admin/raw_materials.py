@@ -18,6 +18,9 @@ def render_raw_materials():
     table_rm = rm_service.get_table_metadata(pagination_rm, is_main=True)
     table_rmc = rmc_service.get_table_metadata(pagination_rmc, is_main=False)
     
+    table_rm["filters"] = rm_service.get_filters_config()
+    table_rmc["filters"] = rmc_service.get_filters_config()
+    
     table_rm["get_form_action"] = request.path
     table_rmc["get_form_action"] = request.path
 
