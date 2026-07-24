@@ -47,11 +47,11 @@
                     </div>
                     <div class="block-content">
                         {% for filter in table.filters %}
-                            {% set field_name = table.id ~ '_' ~ filter.name %}
+                            {% set field_name = table.id ~ '_filter_' ~ filter.name %}
                             {% if filter.type in ["select", "select_fk", "bool"] %}
                             <div class="form-group">
                                 <label for="{{ field_name }}">{{ filter.label }}</label>
-                                    <select name="{{ field_name }}" id="{{ field_name }}">
+                                    <select name="{{ field_name }}">
                                         <option value="">Todos</option>
                                         {% for value, label in filter.options %}
                                             <option value="{{ value }}"

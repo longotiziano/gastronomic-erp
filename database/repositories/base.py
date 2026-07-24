@@ -49,8 +49,8 @@ class BaseRepository(Generic[T]):
             model = self.model
             
         query = db.session.query(model)
-        if active_only and hasattr(self.model, "record_status"):
-            query = query.filter(self.model.record_status == True)  # noqa: E712 # type: ignore
+        if active_only and hasattr(model, "record_status"):
+            query = query.filter(model.record_status == True)  # noqa: E712 # type: ignore
         return query.all()
 
     def get_filtered_sorted(
@@ -64,13 +64,12 @@ class BaseRepository(Generic[T]):
         filters = filters or {}
         sorts = sorts or {}
         allowed = getattr(self.model, "filterable_fields", set())
-
+        
         query = db.session.query(self.model)
 
         if search:
             search_conditions = [
-                getattr(self.model, field).ilike(f"%{search}%")
-                for field in allowed
+                getattr(self.model, "name").ilike(f"%{search}%")
             ]
             if search_conditions:
                 query = query.filter(or_(*search_conditions))
@@ -85,7 +84,6 @@ class BaseRepository(Generic[T]):
                 continue
             column = getattr(self.model, field)
             query = query.order_by(column.desc() if descending else column.asc())
-
         return _paginate_query(query, page, per_page) # type: ignore
 
     def get_by_filter(self, **filters) -> list[T]:

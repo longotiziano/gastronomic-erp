@@ -26,7 +26,8 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False, info={
-        "title": True
+        "title": True,
+        "filter_type": "search"
     })
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False, info={
@@ -35,14 +36,23 @@ class User(db.Model):
     address = db.Column(db.String(255), nullable=True, info={
         "title": True
     })
-    rol = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.waiter)
+    rol = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.waiter, info={
+        "filter_type": "select",
+        "label": "Puesto"
+    })
     leave_at = db.Column(db.DateTime, nullable=True)
     daily_salary = db.Column(db.Float, nullable=False, default=0.0, info={
         "min_value": 0.0
     })
-    bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=True)
+    bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=True, info={
+        "label": "Bar",
+        "filter_type": "select_fk"
+    })
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
-    record_status = db.Column(db.Boolean, default=True, nullable=False)
+    record_status = db.Column(db.Boolean, default=True, nullable=False, info={
+        "label": "Estado",
+        "filter_type": "bool"
+    })
 
     filterable_fields = ["name", "email", "rol", "bar_id", "record_status"]
 

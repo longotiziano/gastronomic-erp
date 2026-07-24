@@ -14,13 +14,22 @@ class Bar(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True, info={
-        "title": True
+        "title": True,
+        "filter_type": "search",
+        "sort": True
     })
     address = db.Column(db.String(255), nullable=True, info={
-        "title": True
+        "title": True,
+        "sort": True
     })
-    record_status = db.Column(db.Boolean, default=True, nullable=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    record_status = db.Column(db.Boolean, default=True, nullable=False, info={
+        "label": "Estado",
+        "filter_type": "bool",
+        "sort": True
+    })
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False, info={
+        "sort": True
+    })
 
     # Relationships
     employees = db.relationship("User", back_populates="bar", lazy="dynamic")

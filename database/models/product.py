@@ -19,10 +19,18 @@ class ProductCategory(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, info={
-        "title": True
+        "title": True,
+        "filter_type": "search",
+        "label": "Producto"
     })
-    sector = db.Column(db.Enum(ProductSector), nullable=False)
-    record_status = db.Column(db.Boolean, default=True, nullable=False)
+    sector = db.Column(db.Enum(ProductSector), nullable=False, info={
+        "filter_type": "select",
+        "label": "Sector"
+    })
+    record_status = db.Column(db.Boolean, default=True, nullable=False, info={
+        "label": "Estado",
+        "filter_type": "bool"
+    })
 
     filterable_fields = ["name", "sector", "record_status"]
 
@@ -52,14 +60,25 @@ class Product(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False, info={
-        "title": True
+        "title": True,
+        "label": "Producto",
+        "filter_type": "search"
     })
-    category_id = db.Column(db.Integer, db.ForeignKey("product_categories.id"), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey("product_categories.id"), nullable=False, info={
+        "label": "Categoría",
+        "filter_type": "select_fk"
+    })
     price = db.Column(db.Float, nullable=False, info={
         "min_value": 0.0
     })
-    bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=False)
-    record_status = db.Column(db.Boolean, default=True, nullable=False)
+    bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=False, info={
+        "label": "Bar",
+        "filter_type": "select_fk"
+    })
+    record_status = db.Column(db.Boolean, default=True, nullable=False, info={
+        "label": "Estado",
+        "filter_type": "bool"
+    })
 
     filterable_fields = ["name", "category_id", "bar_id", "record_status"]
 

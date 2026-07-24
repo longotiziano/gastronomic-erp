@@ -46,11 +46,11 @@ class BaseCrudService(Generic[T]):
         leyendo el 'info' de cada columna del modelo."""
         inspector = inspect(self.repo.model)
         filtros = []
-
+        
         for column in inspector.column_attrs: # type: ignore
             col_info = column.expression.info or {}
             filter_type = col_info.get("filter_type")
-
+            print(f"{column} procesando filtro de {self.repo.model} donde es {filter_type}")
             if not filter_type:
                 continue
 
@@ -71,18 +71,18 @@ class BaseCrudService(Generic[T]):
             elif filter_type == "select_fk":
                 rel = next(
                     (r for r in inspector.relationships # type: ignore
-                     if column.key in [c.key for c in r.local_columns]),
+                    if column.key in [c.key for c in r.local_columns]),
                     None
                 )
                 if rel:
                     remote_model = rel.mapper.class_
-                    config["options"] = [
-                        (obj.id, obj.name) for obj in remote_model.query.all()
-                    ]
+                    config["options"] = remote_model.query.with_entities(
+                        remote_model.id, remote_model.name
+                    ).all()
 
             filtros.append(config)
-        for i in filtros:
-            print(i)
+        for f in filtros:
+            print(f)
         return filtros
     
 
@@ -122,11 +122,8 @@ class BaseCrudService(Generic[T]):
         prefix = f"{self.repo.model.__tablename__}_" # type: ignore
 
         for key, value in request.args.items():
-            print(f"Processing key: {key}, value: {value}")  # Debugging line
             if not key.startswith(prefix):
-                print(f"Skipping key: {key} as it does not start with prefix: {prefix}")  # Debugging line
                 continue
-            
             stripped = key.removeprefix(prefix)
 
             if stripped == "search" and value:
@@ -139,7 +136,6 @@ class BaseCrudService(Generic[T]):
                 sorts[field] = (value == "desc")
 
         page = request.args.get(f"{prefix}page", 1, type=int)
-        print(f"Search: {search}")
         return self.repo.get_filtered_sorted(
             search=search, filters=filters, sorts=sorts, page=page
         )

@@ -28,6 +28,7 @@ Created for code abstraction.
     `'search'`, -> free-text search
     `'bool'` -> selectable Sí/No (Activo/Inactivo)
 ]
+- `sort: bool` = Allows sorting by the particular field
 
 ## Special methods
 - `to_table_row(self) -> list` = Returns a row of the rendered table.
