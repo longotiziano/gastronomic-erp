@@ -8,7 +8,7 @@ class Sale(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey("products.id"), nullable=False)
     amount = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Float, nullable=False)          # Price at the moment of the sale
+    price = db.Column(db.Float, nullable=False) # Price at the moment of the sale
     bar_id = db.Column(db.Integer, db.ForeignKey("bars.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
