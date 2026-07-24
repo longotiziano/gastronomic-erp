@@ -23,11 +23,12 @@ class RawMaterialCategory(db.Model):
     name = db.Column(db.String(100), unique=True, nullable=False, info={
         "title": True,
         "label": "Categoría",
-        "filter_type": "search"
+        "filter_type": "search",
     })
     record_status = db.Column(db.Boolean, default=True, nullable=False, info={
         "label": "Estado",
-        "filter_type": "bool"
+        "filter_type": "bool",
+        "sort": True
     })
 
     # Relationships

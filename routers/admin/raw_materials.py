@@ -20,7 +20,7 @@ def render_raw_materials():
     
     table_rm["filters"] = rm_service.get_filters_config()
     table_rmc["filters"] = rmc_service.get_filters_config()
-    table_rmc["sorts"] = rm_service.get_sorts_config()
+    table_rm["sorts"] = rm_service.get_sorts_config()
     table_rmc["sorts"] = rmc_service.get_sorts_config()
     
     table_rm["get_form_action"] = request.path

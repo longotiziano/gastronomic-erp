@@ -25,11 +25,13 @@ class ProductCategory(db.Model):
     })
     sector = db.Column(db.Enum(ProductSector), nullable=False, info={
         "filter_type": "select",
-        "label": "Sector"
+        "label": "Sector",
+        "sort": True
     })
     record_status = db.Column(db.Boolean, default=True, nullable=False, info={
         "label": "Estado",
-        "filter_type": "bool"
+        "filter_type": "bool",
+        "sort": True
     })
 
     filterable_fields = ["name", "sector", "record_status"]
@@ -97,7 +99,7 @@ class Product(db.Model):
         return [
             self.name,
             self.category.name if self.category else "-",
-            self.price,
+            f"${self.price:.0f}",
             self.bar.name if self.bar else "-",
             self.record_status,
         ]

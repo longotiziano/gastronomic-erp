@@ -93,7 +93,7 @@ class User(db.Model):
             self.email,
             self.address,
             self.rol.value if hasattr(self.rol, "value") else self.rol,
-            f"${self.daily_salary:.2f}",
+            f"${self.daily_salary:.0f}",
             self.bar.name if self.bar else "-",
             self.record_status,
         ]

@@ -21,7 +21,7 @@ def render_products():
     
     table_product["filters"] = product_service.get_filters_config()
     table_product_category["filters"] = product_category_service.get_filters_config()
-    table_product_category["sorts"] = product_service.get_sorts_config()
+    table_product["sorts"] = product_service.get_sorts_config()
     table_product_category["sorts"] = product_category_service.get_sorts_config()
     
     table_product["get_form_action"] = request.path
