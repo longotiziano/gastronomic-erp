@@ -2,30 +2,6 @@
 
 {% block title %}Panel de Administración{% endblock %}
 
-{% block head %}
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/dashboard.css') }}">
-
-    <!-- Librería de Chart.js y plugins-->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix"></script>
-
-    <!-- JS -->
-    <!-- Datos para los gráficos -->
-    <script>
-        const data = {{ data | tojson }};
-        console.log(data)
-    </script>
-    {% if area=='reservations' %}
-        <script type="module" src="{{ url_for('static', filename='js/sections/dashboards/reservations.js') }}"></script>
-    {% endif %}
-    {% if area=='reviews' %}
-        <script type="module" src="{{ url_for('static', filename='js/sections/dashboards/reviews.js') }}"></script>
-    {% endif %}
-
-{% endblock %}
-
 {% block header %}
     {% include 'partials/nav.html' %}
 {% endblock %}

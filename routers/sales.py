@@ -6,6 +6,6 @@ sales_bp = Blueprint("sales", __name__)
 @sales_bp.route("/sales")
 def render_sales():
     
-    return render_template("index.html",
+    return render_template("sections/sales.html",
 
         is_admin=is_admin())

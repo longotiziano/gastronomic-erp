@@ -47,7 +47,9 @@ def create_app(config_object="config.Config"):
     app.register_blueprint(raw_materials_bp)
     from routers.admin.products import products_bp
     app.register_blueprint(products_bp)
-
+    from routers.sales import sales_bp
+    app.register_blueprint(sales_bp)
+    
     return app
 
 if __name__ == "__main__":

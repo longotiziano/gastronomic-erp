@@ -5,6 +5,8 @@ class ProductService(BaseCrudService):
     def __init__(self):
         super().__init__(ProductRepository())
         
+    
+    
 class ProductCategoryService(BaseCrudService):
     def __init__(self):
         super().__init__(ProductCategoryRepository())

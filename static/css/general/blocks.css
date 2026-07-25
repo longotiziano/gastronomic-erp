@@ -11,7 +11,7 @@
 }
 
 
-.block.border {
+.border {
     background-color: rgba(43, 43, 43, 0);
     box-shadow: 4px 4px 16px rgba(0, 0, 0, 0);
     border: 1px solid rgba(124, 124, 124, 0.123)
@@ -61,7 +61,7 @@
     overflow-x: auto;   
 }
 
-.flex-block {
+.flexcol-block {
     display: flex;
     flex-direction: column;
     gap: 1rem;

@@ -4,7 +4,7 @@
     </a>
     <ul>
         {% if is_logged or is_admin %}
-        <li><a href="">Ventas</a></li>
+        <li><a href="{{ url_for('sales.render_sales') }}">Ventas</a></li>
         <li><a href="">Stock</a></li>
         <li><a href="">Empleados</a></li>
         <li><a href="">Carta</a></li>

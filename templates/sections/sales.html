@@ -1,0 +1,40 @@
+{% extends 'partials/base.html' %}
+{% block title %}Ventas{% endblock %}
+
+{% block head %}
+<!-- CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sections/dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/btns/uploaders.css') }}">
+
+<!-- chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix"></script>
+
+{% endblock %}
+
+{% block header %}
+{% include 'partials/nav.html' %}
+{% include 'partials/settings.html' %}
+{% endblock %}
+{% block body %}
+<div class="overlay" id="overlay"></div>
+<div class="page-content">
+    <div class="flexcol-block">
+        {% from 'partials/uploader.html' import render_uploader %}
+
+        {{ render_uploader(
+            'sales-file',
+            url_for('raw_materials.create'),
+            'Cargar informe de ventas',
+            {'r_id': current_restaurant_id}
+        ) }}
+        <div class="block abm-block" style="flex: 1;">
+            {% include 'abm/adm_table.html' %}
+        </div>
+    </div>
+    <div class="block dashboards">
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/btns/uploaders.js') }}"></script>
+{% endblock %}
