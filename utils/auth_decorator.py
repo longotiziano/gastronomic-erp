@@ -55,4 +55,5 @@ def require_bar(f):
             return redirect(url_for("main.index"))
         g.bar_id = bar_id
         g.bars = {f"{b.name}": b.id for b in bars}
+        return f(*args, **kwargs)
     return wrapper

@@ -1,9 +1,8 @@
 from database.models.sale import Sale
+from database.models.product import Product
 from database.repositories.sales import SaleRepository
 from services.base_service import BaseCrudService
 from utils.exceptions import ValidationError
-from werkzeug.security import generate_password_hash
-from utils.helpers import clean_string
 
 import pandas as pd
 from dataclasses import dataclass
@@ -34,7 +33,7 @@ class SaleService(BaseCrudService):
 
 
     def read_sales_excel(self, filepath: str) -> list[ParsedSaleRow]:
-        """Reads MaxiRest's sales file and converts each row into a ParsedSaleRow."""
+        """Reads MaxiRest's sales file and converts each row into a ParsedSaleRow. Checks duplicates"""
         try:
             df = pd.read_excel(filepath)
         except Exception as e:
@@ -48,16 +47,32 @@ class SaleService(BaseCrudService):
             )
 
         df = df[list(self.required_columns)].dropna(subset=list(self.required_columns))
+        df["Nombre"] = df["Nombre"].astype(str).str.strip()
+
+        duplicated_mask = df["Nombre"].duplicated(keep=False)
+        if duplicated_mask.any():
+            duplicated_names = sorted(df.loc[duplicated_mask, "Nombre"].unique())
+            raise ValidationError(
+                f"El archivo contiene productos duplicados: {', '.join(duplicated_names)}."
+            )
 
         rows = []
         for _, row in df.iterrows():
             rows.append(ParsedSaleRow(
-                product_name=str(row["Nombre"]).strip(),
+                product_name=row["Nombre"],
                 quantity=float(row["Unidad"]),
                 total_amount=float(row["Importe"]),
             ))
 
         return rows
+
+
+    def check_missing_products(self, rows_list: list[ParsedSaleRow]) -> list[ParsedSaleRow]:
+        """Receives a list of ParsedSaleRow, and returns the registers that are NOT in database"""
+        product_names = [r.product_name for r in rows_list]
+        missing_products = self.repo.values_not_present_in("name", product_names, model=Product)
+        parsed_list = [r for r in rows_list if r.product_name in missing_products]
+        return parsed_list
 
 
     def create(self, **data) -> Sale:

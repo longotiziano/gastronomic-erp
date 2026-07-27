@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, request, redirect
+from flask import Blueprint, render_template, session, request, redirect, url_for
 
 from services.bars import BarService
 from services.extras.dolar_service import get_cotizaciones_dolar
@@ -15,6 +15,9 @@ bar_service = BarService()
 def index():
     rol = session.get("user_rol")
     is_logged = rol is not None
+    if not is_logged:
+        return redirect(url_for("auth.login"))
+        
     is_admin = rol in ["administrator"] if rol else False
     
     bars = bar_service.repo.get_all()

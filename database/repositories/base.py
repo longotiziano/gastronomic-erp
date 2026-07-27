@@ -34,13 +34,21 @@ class BaseRepository(Generic[T]):
     def get_by_values(self, col: str, values: list[Any], model=None) -> list:
         """Returns a list with objects that match the attribute `col` with at least 1 element from `values`
         
-        e.g. -> col = `drink`, values = [`coca`, `pepsi`] -> [ObjectWithCoca, ...] (`pepsi wasn't in the database`)"""
+        e.g. -> col = `drink`, values = [`coca`, `fanta`, `pepsi`] -> [ObjectWithCoca, ObjectWithFanta] (`pepsi wasn't in the database`)"""
         if model is None:
             model = self.model
 
         column = getattr(model, col)
         return db.session.query(model).filter(column.in_(values)).all()
 
+
+    def values_not_present_in(self, col: str, values: list[Any], model=None) -> set:
+        """Returns a set of `values` that are NOT in the database for the attribute `col`
+
+        e.g. -> col = `id`, values = [1, 2, 3] -> {2} (id = 2 wasn't in the database)"""
+        present = self.values_present_in(col, values, model)
+        return set(values) - present
+    
 
     def values_present_in(self, col: str, values: list[Any], model=None) -> set:
         """Returns a set of `values` that are in the database for the attribute `col`
