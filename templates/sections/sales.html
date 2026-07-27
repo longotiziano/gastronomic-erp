@@ -25,9 +25,8 @@
 
         {{ render_uploader(
             'sales-file',
-            url_for('raw_materials.create'),
-            'Cargar informe de ventas',
-            {'r_id': current_restaurant_id}
+            url_for('sales.upload_file'),
+            'Cargar informe de ventas'
         ) }}
         <div class="block abm-block" style="flex: 1;">
             {% include 'abm/adm_table.html' %}

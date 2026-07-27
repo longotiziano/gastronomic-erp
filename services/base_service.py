@@ -55,8 +55,6 @@ class BaseCrudService(Generic[T]):
                 "name": column.key,
                 "label": col_info.get("label", column.key.capitalize()),
             })
-        for s in sorts:
-            print(s)
         return sorts
 
 

@@ -2,19 +2,142 @@
 {% block title %} Restaurante {% endblock %}
 
 {% block head %}
-<!-- CSS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-
-<!-- JS -->
 {% endblock %}
 
 {% block header %}
     {% include 'partials/nav.html' %}
+    {% include 'partials/settings.html' %}
 {% endblock %}
 
 {% block body %}
-    <!-- Para el blurr y oscurecimiento de la página -->
-    <div class="overlay"></div>
-    <!-- Panel para actualizar usuario -->
-    {% include 'partials/settings.html' %}
+<div class="overlay"></div>
+<div class="page-content">
+ 
+  <!-- ===== COLUMNA PRINCIPAL ===== -->
+  <div class="flex-main-content flexcol-block">
+ 
+    <!-- Bienvenida -->
+    <div class="block">
+      <div class="block-header">
+        <h2>👋 {{ saludo }}, {{ user.name }}</h2>
+        <h3>{{ fecha_actual }}</h3>
+      </div>
+      <div class="block-content">
+        <p style="color: aliceblue; margin: 0;">
+          Rol: <strong>{{ user.rol|capitalize }}</strong>
+          {% if selected_bar_name %}
+            &nbsp;·&nbsp; Operando en: <strong>{{ selected_bar_name }}</strong>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    {% if not selected_bar_name %}
+    <!-- Aviso: todavía no eligió bar. La selección real está en el botón del nav. -->
+    <div class="block border" style="border-color: rgba(248, 113, 113, 0.4);">
+      <div class="block-content" style="flex-direction: row; align-items: center; justify-content: space-between;">
+        <p style="color: aliceblue; margin: 0;">
+          🔴 Todavía no elegiste en qué bar vas a operar.
+        </p>
+        <span style="color: aliceblue; opacity: 0.7; font-size: 0.85rem;">
+          Usá el selector arriba a la derecha del menú ↗
+        </span>
+      </div>
+    </div>
+    {% endif %}
+  
+    <!-- Accesos rápidos -->
+    <div class="block">
+      <div class="block-header">
+        <h2>Accesos rápidos</h2>
+      </div>
+      <div class="block-content flex-block" style="gap: 15px; flex-wrap: wrap;">
+        <a href="/sales" class="block border quick-link" style="flex:1; min-width:140px; text-decoration:none;">
+          <div class="block-content center"><h3>🛒 Ventas</h3></div>
+        </a>
+        <a href="/cash-closing" class="block border quick-link" style="flex:1; min-width:140px; text-decoration:none;">
+          <div class="block-content center"><h3>🧾 Arqueo</h3></div>
+        </a>
+        <a href="/stock" class="block border quick-link" style="flex:1; min-width:140px; text-decoration:none;">
+          <div class="block-content center"><h3>📦 Stock</h3></div>
+        </a>
+        <a href="/schedule" class="block border quick-link" style="flex:1; min-width:140px; text-decoration:none;">
+          <div class="block-content center"><h3>🗓️ Turnos</h3></div>
+        </a>
+      </div>
+    </div>
+ 
+  </div>
+ 
+  <!-- ===== COLUMNA LATERAL ===== -->
+  <div class="flexcol-block" style="width: 320px; flex-shrink: 0;">
+ 
+    <!-- Cotización del dólar -->
+    <div class="block">
+      <div class="block-header">
+        <h2>Cotización Dólar</h2>
+        <h3 id="dolar-updated"></h3>
+      </div>
+      <div class="block-content" id="dolar-widget">
+        {% if dolar and (dolar.oficial or dolar.blue) %}
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="color:aliceblue;">Oficial</span>
+            <strong style="color:aliceblue;">${{ dolar.oficial.venta if dolar.oficial else '-' }}</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:aliceblue;">Blue</span>
+            <strong style="color:aliceblue;">${{ dolar.blue.venta if dolar.blue else '-' }}</strong>
+          </div>
+        {% else %}
+          <p style="color:aliceblue; opacity:0.6;">No se pudo cargar la cotización.</p>
+        {% endif %}
+      </div>
+    </div>
+ 
+    <!-- Alertas / recomendaciones -->
+    <div class="block">
+      <div class="block-header">
+        <h2>Alertas</h2>
+      </div>
+      <div class="block-content">
+        {% if alerts %}
+          {% for alert in alerts %}
+          <p style="color: aliceblue; margin: 0 0 8px 0;">⚠️ {{ alert.message }}</p>
+          {% endfor %}
+        {% else %}
+          <p style="color: aliceblue; opacity:0.6; margin:0;">Todo en orden, sin alertas.</p>
+        {% endif %}
+      </div>
+    </div>
+ 
+    <!-- Resumen del día -->
+    <div class="block">
+      <div class="block-header">
+        <h2>Resumen del día</h2>
+      </div>
+      <div class="block-content">
+        <p style="color: aliceblue; margin:0 0 8px 0;">Ventas hoy: <strong>${{ today_sales or 0 }}</strong></p>
+        <p style="color: aliceblue; margin:0;">Último arqueo: <strong>{{ last_arqueo_date or "Sin registros" }}</strong></p>
+      </div>
+    </div>
+ 
+  </div>
+ 
+</div>
+ 
+<style>
+  .bar-card {
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .bar-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  .bar-card-selected {
+    border: 1px solid #4ade80;
+    background-color: rgba(74, 222, 128, 0.08);
+  }
+  .quick-link:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+</style>
 {% endblock %}

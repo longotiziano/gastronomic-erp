@@ -8,6 +8,14 @@ DB_PATH = INSTANCE_DIR / "gastronomic_erp.db"
 
 
 class Config:
+    """
+    Flask sessions:
+    - user_id: int = ID of the active user
+    - user_name: str = Name of the active user
+    - user_rol: str = Rol of the active user
+    - bar_id: int = Active bar to render the pages
+    - bar_name: str = Name of the active bar
+    """
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-change-in-production")
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL",

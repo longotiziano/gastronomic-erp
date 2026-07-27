@@ -102,6 +102,15 @@ prods = [
 # ==========================================
 users = [
     {
+        "name": "Peter",
+        "address": "Av. Corrientes 1234, CABA",
+        "email": "admin@a.com",
+        "password": "password",
+        "daily_salary": 25000.0,
+        "leave_at": None,
+        "rol": "administrator"
+    },
+    {
         "name": "Gonzalo Admin",
         "address": "Av. Corrientes 1234, CABA",
         "email": "admin@clubserrano.com",

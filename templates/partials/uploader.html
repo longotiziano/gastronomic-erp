@@ -1,13 +1,10 @@
 {% macro render_uploader(uploader_id, action, label="Cargar datos", extra_fields={}) %}
 <form method="POST" action="{{ action }}" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="block">
         <div class="block-header center">
             <h3>{{ label }}</h3>
         </div>
-
-        {% for field_name, field_value in extra_fields.items() %}
-            <input type="hidden" name="{{ field_name }}" value="{{ field_value }}">
-        {% endfor %}
 
         <div class="block-content" style="gap: 0;">
             <div class="btn-icon btn-edit upload-dropzone" data-uploaderid="{{ uploader_id }}">

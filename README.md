@@ -12,7 +12,6 @@ A web-based ERP system designed for bars and restaurants. Manage employees, prod
 - 💰 **Payroll Management** — Daily salary tracking per employee with payment history
 - 🧾 **Arqueos (Cash Reconciliation)** — End-of-day cash register closings with totals, card splits, differences, anulations, invitations, and expenses
 - 🧂 **Stock & Recipes** — Track raw material stock levels and define product recipes with unit-of-measure support
-- 🔐 **Session Management** — Stateless auth via JWT tokens stored in HTTPOnly cookies
 
 ---
 
@@ -21,22 +20,14 @@ A web-based ERP system designed for bars and restaurants. Manage employees, prod
 | Layer      | Technology                                      |
 |------------|-------------------------------------------------|
 | Backend    | Python / Flask                                  |
-| Auth       | Flask-JWT-Extended                              |
+| Auth       | Flask Sessions                                  |
 | ORM        | SQLAlchemy                                      |
 | Database   | SQLite                                          |
 | Frontend   | Jinja2 templates + Vanilla JS                   |
 | Charts     | Chart.js with heatmap and zoom plugins          |
 | Alerts     | SweetAlert2                                     |
 | PDF Export | WeasyPrint / ReportLab *(schedule export)*      |
-| Security   | `werkzeug.security` for password hashing        |
-
----
-
-## Sessions
-
-Sessions are stored in **HTTPOnly cookies** containing a signed **JWT token**. The token payload includes the `user_id`, which is used to identify and authorize each request.
-
----
+| Security   | `werkzeug.security` & CSRFs tokens              |
 
 ## ABMs & Logical Deletion
 
@@ -63,6 +54,7 @@ Tables marked with 🕐 include a `created_at` timestamp. Tables marked with �
 |--------|--------|
 | id     | Integer PK |
 | name   | String |
+| record_status | Boolean |
 
 ### `users` 🕐 🗑️
 | Column     | Type    |
@@ -73,18 +65,11 @@ Tables marked with 🕐 include a `created_at` timestamp. Tables marked with �
 | password   | String (hashed) |
 | created_at | DateTime |
 | record_status | Boolean |
-
-### `employees` 🕐
-| Column       | Type    |
-|--------------|---------|
-| id           | Integer PK |
-| user_id      | FK → users |
-| address      | String  |
 | rol          | Enum: `waiter`, `cashier`, `administrator`, `receptionist`, `chef`, `chef_assistant`, `dishes`, `manager` |
 | leave_at     | DateTime (nullable) |
-| daily_salary | Float   |
 | bar_id       | FK → bars |
-| created_at   | DateTime |
+| daily_salary | Float   |
+| address      | String  |s
 
 ### `product_categories`
 | Column | Type   |
@@ -92,6 +77,7 @@ Tables marked with 🕐 include a `created_at` timestamp. Tables marked with �
 | id     | Integer PK |
 | name   | String |
 | sector | Enum: `kitchen`, `bar` |
+| record_status | Boolean |
 
 ### `products` 🗑️
 | Column      | Type   |
@@ -155,6 +141,7 @@ Tables marked with 🕐 include a `created_at` timestamp. Tables marked with �
 |--------|--------|
 | id     | Integer PK |
 | name   | String |
+| record_status | Boolean |
 
 ### `raw_materials` 🗑️
 | Column      | Type   |
@@ -163,6 +150,7 @@ Tables marked with 🕐 include a `created_at` timestamp. Tables marked with �
 | name        | String |
 | category_id | FK → raw_material_categories |
 | record_status | Boolean |
+| uom             | Enum `kg`, `gr`, `ml`, `l`, `unit` |
 
 ### `recipes`
 | Column          | Type    |
@@ -171,7 +159,6 @@ Tables marked with 🕐 include a `created_at` timestamp. Tables marked with �
 | product_id      | FK → products |
 | raw_material_id | FK → raw_materials |
 | amount          | Float   |
-| uom             | String (default: `gr`) |
 
 ### `stock`
 | Column          | Type    |
