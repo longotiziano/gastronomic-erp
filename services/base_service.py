@@ -19,13 +19,13 @@ class BaseCrudService(Generic[T]):
     # RENDERING
     # =========================================================
 
-    def _get_table_rows(self, pagination: Pagination) -> list[dict]:
+    def _get_table_rows(self, items) -> list[dict]:
         """
         Returns a list of dictionaries representing the rows of the table.
         Each dictionary contains 'cells' and 'data' keys.
         """
         rows = []
-        for item in pagination.items:
+        for item in items:
             if hasattr(item, "to_table_row"):
                 cells = item.to_table_row()
             else:
@@ -100,7 +100,7 @@ class BaseCrudService(Generic[T]):
         return filtros
     
 
-    def get_table_metadata(self, pagination, is_main: bool = True) -> dict:
+    def get_table_metadata(self, items, pagination = None, is_main: bool = True) -> dict:
         """
         Builds the metadata required by Jinja using columns name list,
         instance cells method, and dumping all database attributes into data payload.
@@ -111,7 +111,7 @@ class BaseCrudService(Generic[T]):
             raise InternalError(f"El modelo {model.__name__} debe tener un atributo 'ui_config' para generar la tabla.")
         
         cols = ui.get("table_cols", [])
-        rows = self._get_table_rows(pagination)
+        rows = self._get_table_rows(items)
 
         # 3. Retornar la estructura exacta que Jinja consume
         return {
@@ -122,7 +122,7 @@ class BaseCrudService(Generic[T]):
             "form_template": ui.get("form_template"),
             "main_content": is_main,
             "secondary_content": not is_main,
-            "pagination": pagination
+            "pagination": pagination if pagination else None
         }
 
     # =========================================================

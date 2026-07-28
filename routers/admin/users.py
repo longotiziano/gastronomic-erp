@@ -14,7 +14,7 @@ users_service = UserService()
 def render_users():
     pagination_users = users_service.filter_sort()
     
-    table_users = users_service.get_table_metadata(pagination_users, is_main=True)
+    table_users = users_service.get_table_metadata(pagination_users.items, pagination_users, is_main=True)
     table_users["filters"] = users_service.get_filters_config()
     table_users["sorts"] = users_service.get_sorts_config()
     table_users["get_form_action"] = request.path

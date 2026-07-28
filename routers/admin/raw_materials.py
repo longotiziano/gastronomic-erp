@@ -15,8 +15,8 @@ def render_raw_materials():
     pagination_rm = rm_service.filter_sort()
     pagination_rmc = rmc_service.filter_sort()
     
-    table_rm = rm_service.get_table_metadata(pagination_rm, is_main=True)
-    table_rmc = rmc_service.get_table_metadata(pagination_rmc, is_main=False)
+    table_rm = rm_service.get_table_metadata(pagination_rm.items, pagination_rm, is_main=True)
+    table_rmc = rmc_service.get_table_metadata(pagination_rmc.items, pagination_rmc, is_main=False)
     
     table_rm["filters"] = rm_service.get_filters_config()
     table_rmc["filters"] = rmc_service.get_filters_config()

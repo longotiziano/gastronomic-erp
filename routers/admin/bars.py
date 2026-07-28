@@ -13,7 +13,7 @@ bars_service = BarService()
 def render_bars():
     pagination_bars = bars_service.filter_sort()
     
-    table_bars = bars_service.get_table_metadata(pagination_bars, is_main=True)
+    table_bars = bars_service.get_table_metadata(pagination_bars.items, pagination_bars, is_main=True)
     table_bars["filters"] = bars_service.get_filters_config()
     table_bars["sorts"] = bars_service.get_sorts_config()
     table_bars["get_form_action"] = request.path

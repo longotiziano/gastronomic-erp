@@ -16,8 +16,10 @@ def render_products():
     pagination_product = product_service.filter_sort()
     pagination_product_category = product_category_service.filter_sort()
     
-    table_product = product_service.get_table_metadata(pagination_product, is_main=True)
-    table_product_category = product_category_service.get_table_metadata(pagination_product_category, is_main=False)
+    table_product = product_service.get_table_metadata(
+        pagination_product.items, pagination_product, is_main=True)
+    table_product_category = product_category_service.get_table_metadata(
+        pagination_product_category.items, pagination_product_category, is_main=False)
     
     table_product["filters"] = product_service.get_filters_config()
     table_product_category["filters"] = product_category_service.get_filters_config()

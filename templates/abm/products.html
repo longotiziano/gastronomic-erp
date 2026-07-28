@@ -3,7 +3,6 @@
 {% block area_js %}
 <script type="module">
 import { setupCrudModal } from "{{ url_for('static', filename='js/abm/crud.js') }}";
-import "{{ url_for('static', filename='js/abm/products.js') }}";
 
 setupCrudModal(
     document.querySelector('[data-abm="products"]'),

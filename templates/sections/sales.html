@@ -5,12 +5,28 @@
 <!-- CSS -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sections/dashboard.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/btns/uploaders.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sections/abm.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/general/pagination.css') }}">
 
 <!-- chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix"></script>
 
+<!-- JS -->
+{% if missing_table %}
+<script type="module">
+    import { setupCrudModal } from "{{ url_for('static', filename='js/abm/crud.js') }}";
+
+    setupCrudModal(
+        document.querySelector('[data-abm="products"]'),
+        { name: 'name', category_id: 'category_id', price: 'price', bar_id: 'bar_id', recipe_raw_material_id: 'recipe_raw_material_id', recipe_amount: 'recipe_amount' },
+        "/products/create",
+        "/products/update",
+        "/products/alt_status"
+);
+</script>
+{% endif %}
 {% endblock %}
 
 {% block header %}
@@ -18,8 +34,17 @@
 {% include 'partials/settings.html' %}
 {% endblock %}
 {% block body %}
-<div class="overlay" id="overlay"></div>
+<div class="overlay {% if missing_table %}active{% endif %}" id="overlay"></div>
 <div class="page-content">
+    {% if missing_table %}
+    <div class="fixed-block open">
+        <div class="block form-block data-abm="{{ missing_table.id }}">
+            {% from 'abm/adm_table.html' import render_table %}
+            {{ render_table(missing_table, popup=True) }}
+        </div>
+        {% include 'forms/products_form.html' %}
+    </div>
+    {% endif %}
     <div class="flexcol-block">
         {% from 'partials/uploader.html' import render_uploader %}
 
@@ -29,7 +54,7 @@
             'Cargar informe de ventas'
         ) }}
         <div class="block abm-block" style="flex: 1;">
-            {% include 'abm/adm_table.html' %}
+            
         </div>
     </div>
     <div class="block dashboards">

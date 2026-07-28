@@ -67,3 +67,15 @@ a {
   opacity: 1;
   pointer-events: all;
 }
+
+.header-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.table-subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(224, 240, 255, 0.6); /* grisáceo suave sobre tu fondo oscuro */
+}
