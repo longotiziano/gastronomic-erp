@@ -59,7 +59,7 @@ a {
   backdrop-filter: blur(4px);
   z-index: 999;
   opacity: 0;
-  pointer-events: none; /* no bloquea clicks cuando está invisible */
+  pointer-events: none; 
   transition: opacity 0.3s ease;
 }
 
@@ -77,5 +77,5 @@ a {
 .table-subtitle {
     margin: 0;
     font-size: 0.85rem;
-    color: rgba(224, 240, 255, 0.6); /* grisáceo suave sobre tu fondo oscuro */
+    color: rgba(224, 240, 255, 0.6);
 }
