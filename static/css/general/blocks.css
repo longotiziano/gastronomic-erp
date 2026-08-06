@@ -77,6 +77,15 @@
     justify-content: flex-end;
 }
 
+.block-footer.mini {
+    padding: 0.3rem;
+}
+
+.block-footer.mini button {
+    padding: 0.3rem;
+    font-size: 0.8rem;
+}
+
 .fixed-block {
     z-index: 1001;
     position: fixed;
