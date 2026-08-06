@@ -20,10 +20,10 @@ const fillForm = (fields, data, idKey, form, deleteForm, updateUrlBase, toggleUr
     }
 };
 
-export const setupCrudModal = (container, fields, createUrl, updateUrlBase, toggleUrlBase, idKey = 'id') => {
+export const setupCrudModal = (container, fields, createUrl, updateUrlBase, toggleUrlBase, idKey = 'id', extra = {}) => {
     // Todo scopeado al container, no a document
     const modal = container.querySelector('[data-openby="formOpener"]');
-    const overlay = document.querySelector('.overlay'); // este SÍ puede ser global si es compartido
+    const overlay = document.querySelector('.overlay');
     const form = container.querySelector('.form-principal');
     const deleteForm = container.querySelector('.formDelete');
     const addBtn = container.querySelector('.add-btn');
@@ -42,6 +42,11 @@ export const setupCrudModal = (container, fields, createUrl, updateUrlBase, togg
             submitBtn.textContent = 'Actualizar';
             if (title) title.textContent = 'Actualizar';
             fillForm(fields, editBtn.dataset, idKey, form, deleteForm, updateUrlBase, toggleUrlBase);
+            // for the recipes
+            if (extra.onFill) {
+                extra.onFill(editBtn.dataset);
+            }
+
             openModal();    
         });
     });
@@ -51,6 +56,8 @@ export const setupCrudModal = (container, fields, createUrl, updateUrlBase, togg
         submitBtn.textContent = 'Crear';
         if (title) title.textContent = 'Crear';
         form.reset();
+        // for the recipes
+        if (extra.onReset) extra.onReset();
         form.action = createUrl;
         openModal();
     });

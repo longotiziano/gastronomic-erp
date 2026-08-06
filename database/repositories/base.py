@@ -113,7 +113,7 @@ class BaseRepository(Generic[T]):
         for field, descending in sorts.items():
             column = getattr(self.model, field)
             query = query.order_by(column.desc() if descending else column.asc())
-        print(query)
+        
         return _paginate_query(query, page, per_page) # type: ignore
 
     def get_by_filter(self, **filters) -> list[T]:

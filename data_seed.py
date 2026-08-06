@@ -1,6 +1,7 @@
 from services.bars import BarService
 from services.products import ProductService, ProductCategoryService
 from services.raw_materials import RawMaterialService, RawMaterialCategoryService
+from services.recipes import RecipeService
 from services.users import UserService
 
 # ==========================================
@@ -91,10 +92,64 @@ prods = [
     {"name": "Negroni Clásico", "category_id": 4, "price": 5200.0, "bar_id": 2},
     {"name": "Mojito", "category_id": 4, "price": 5000.0, "bar_id": 3},
 
-    # Cervezas/Bebidas (Barra / category_id: 5)
+    # Cervezas/Bebidas (Barra / category_i  d: 5)
     {"name": "Pinta IPA", "category_id": 5, "price": 3800.0, "bar_id": 1},
     {"name": "Pinta Honey", "category_id": 5, "price": 3600.0, "bar_id": 2},
     {"name": "Coca Cola 354ml", "category_id": 5, "price": 2200.0, "bar_id": 1},
+]
+
+# ==========================================
+# 5.1 RECETAS (product_id -> lista de {raw_material_id, amount})
+# ==========================================
+recipes = [
+    # Cheeseburger Doble (product_id: 1)
+    {"product_id": 1, "raw_material_id": 1, "amount": 0.180},   # Carne Picada Especial (kg)
+    {"product_id": 1, "raw_material_id": 10, "amount": 0.050},  # Queso Cheddar (kg)
+    {"product_id": 1, "raw_material_id": 13, "amount": 1},      # Pan de Brioche (unidad)
+
+    # Serrana Burger - Bacon (product_id: 2)
+    {"product_id": 2, "raw_material_id": 1, "amount": 0.180},   # Carne Picada Especial
+    {"product_id": 2, "raw_material_id": 3, "amount": 0.040},   # Panceta Ahumada
+    {"product_id": 2, "raw_material_id": 10, "amount": 0.050},  # Queso Cheddar
+    {"product_id": 2, "raw_material_id": 13, "amount": 1},      # Pan de Brioche
+
+    # Veggie Burger (product_id: 3)
+    {"product_id": 3, "raw_material_id": 6, "amount": 0.030},   # Lechuga Capuchina
+    {"product_id": 3, "raw_material_id": 5, "amount": 0.050},   # Tomate Redondo
+    {"product_id": 3, "raw_material_id": 13, "amount": 1},      # Pan de Brioche
+
+    # Pizza Mozzarella (product_id: 4)
+    {"product_id": 4, "raw_material_id": 15, "amount": 1},      # Prepizza Individual
+    {"product_id": 4, "raw_material_id": 11, "amount": 0.150},  # Queso Mozzarella
+    {"product_id": 4, "raw_material_id": 5, "amount": 0.080},   # Tomate Redondo
+
+    # Papas Serrano con Cheddar (product_id: 5)
+    {"product_id": 5, "raw_material_id": 10, "amount": 0.100},  # Queso Cheddar
+    {"product_id": 5, "raw_material_id": 3, "amount": 0.030},   # Panceta Ahumada
+
+    # Gin Tonic Serrano (product_id: 6)
+    {"product_id": 6, "raw_material_id": 16, "amount": 0.050},  # Gin Apostoles 750ml (L)
+    {"product_id": 6, "raw_material_id": 19, "amount": 0.200},  # Agua Tónica 1.5L (L)
+    {"product_id": 6, "raw_material_id": 9, "amount": 2},       # Menta Fresca (hojas/unidad)
+
+    # Passion Vodka (product_id: 7)
+    {"product_id": 7, "raw_material_id": 18, "amount": 0.050},  # Vodka Smirnoff 700ml
+    {"product_id": 7, "raw_material_id": 8, "amount": 0.5},     # Limón
+
+    # Fernet con Coca (product_id: 8)
+    {"product_id": 8, "raw_material_id": 17, "amount": 0.070},  # Fernet Branca 750ml
+    {"product_id": 8, "raw_material_id": 20, "amount": 0.250},  # Coca Cola 1.5L
+
+    # Negroni Clásico (product_id: 9)
+    {"product_id": 9, "raw_material_id": 16, "amount": 0.030},  # Gin Apostoles 750ml
+    {"product_id": 9, "raw_material_id": 8, "amount": 0.5},     # Limón
+
+    # Mojito (product_id: 10)
+    {"product_id": 10, "raw_material_id": 18, "amount": 0.050}, # Vodka Smirnoff 700ml (o ron, ajustar si tenés esa MP)
+    {"product_id": 10, "raw_material_id": 9, "amount": 5},      # Menta Fresca
+    {"product_id": 10, "raw_material_id": 8, "amount": 0.5},    # Limón
+
+    # Pinta IPA, Pinta Honey, Coca Cola 354ml -> sin receta (venta directa, sin transformación)
 ]
 
 # ==========================================
@@ -183,7 +238,10 @@ def load_initial_data():
     for prod in prods:
         ProductService().create(**prod)
 
+    for recipe in recipes: 
+        RecipeService().create(**recipe)
+
     for user in users:
         UserService().create(**user)
 
-print("¡Registros creados perfectamente! 🚀")
+print("¡Registros creados perfectamente! 🚀")               

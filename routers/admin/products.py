@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 
 from database.models.bar import Bar
+from database.models.raw_material import RawMaterial
 from services.products import ProductService, ProductCategoryService
 from utils.auth_decorator import admin_required
 from utils.flashes import flash_message
@@ -33,7 +34,8 @@ def render_products():
         "abm/products.html",
         page_title="Administrar productos",
         tables=[table_product, table_product_category],
-        categories=product_category_service.repo.get_all(active_only=True), # Para poblar el select del modal
+        categories=product_category_service.repo.get_all(), # Para poblar el select del modal
+        raw_materials=product_service.repo.get_all(model=RawMaterial),
         bars=product_service.repo.get_all(model=Bar),
         deactivate_row=True,
         is_modal=True,
@@ -44,7 +46,30 @@ def render_products():
 @products_bp.post("/products/create")
 @admin_required
 def create():
-    product_service.create(**request.form.to_dict())
+    form = request.form
+
+    # Campos escalares del producto
+    product_data = {
+        "name": form.get("name"),
+        "price": float(form.get("price")),
+        "category_id": int(form.get("category_id")),
+        "bar_id": int(form.get("bar_id")),
+    }
+
+    # Campos de lista (recetas)
+    raw_material_ids = form.getlist("recipe_raw_material_id[]")
+    amounts = form.getlist("recipe_amount[]")
+
+    if len(raw_material_ids) != len(amounts):
+        raise ValueError("Datos de receta inconsistentes")
+
+    recipes = [
+        {"raw_material_id": int(rm_id), "amount": float(amount)}
+        for rm_id, amount in zip(raw_material_ids, amounts)
+        if rm_id and amount
+    ]
+
+    ProductService().create(**product_data, recipes=recipes)
     flash_message("Producto creado correctamente.", category="success")
     return redirect(url_for("products.render_products"))
 

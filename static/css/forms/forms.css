@@ -1,3 +1,14 @@
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
 .block.form-block {
     min-width: 400px;
     max-height: 85vh;
@@ -52,11 +63,20 @@ input:disabled {
 }
 
 .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    display: flex;
+    flex-direction: row;
 }
 
 .form-row .form-group {
     width: 100%;
+}
+
+.recipe-row .form-group select, 
+.recipe-row .form-group input {
+    border: none;
+}
+
+.recipe-row .form-group select:hover,
+.recipe-row .form-group input:hover {
+    cursor: pointer;
 }

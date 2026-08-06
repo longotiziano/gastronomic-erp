@@ -31,7 +31,7 @@
     transition: background 0.3s ease;
 }
 
-.dishes-table tr:hover td:not(:has(.edit-btn)) {
+.dishes-table tr:not(.recipe-row):hover td:not(:has(.edit-btn)) {
     background: rgba(255, 255, 255, 0.089);
     cursor: pointer;
 }
@@ -97,4 +97,29 @@
     color: #fff;
     margin: 0 0 1.5rem;
     font-size: 1.25rem;
+}
+
+/* particularities of the product's form */
+
+.recipe-amount-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.recipe-amount-input {
+    max-width: 30px;
+    text-align: center;
+}
+
+.recipe-uom {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+}
+
+#add-recipe-btn {
+    display: block;
+    margin-left: auto; /* empuja el botón a la derecha */
+    margin-top: 0.5rem;
 }

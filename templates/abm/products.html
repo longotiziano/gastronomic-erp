@@ -3,22 +3,87 @@
 {% block area_js %}
 <script type="module">
 import { setupCrudModal } from "{{ url_for('static', filename='js/abm/crud.js') }}";
-import "{{ url_for('static', filename='js/abm/products.js') }}";
+import { showAlert } from "{{ url_for('static', filename='js/general/alerts.js') }}";
+
+const container = document.querySelector('[data-abm="products"]');
+
+const recipeTemplate = document.getElementById('recipe-row-template');
+const recipeRowsContainer = document.getElementById('recipe-rows');
+const recipeFormSection = document.getElementById('recipe-form-section');   
+const toggleRecipeBtn = document.getElementById('toggle-recipe-form');  
+const addRecipeBtn = document.getElementById('add-recipe-btn');
+
+function createRecipeRow(data = {}) {
+    const clone = recipeTemplate.content.cloneNode(true);
+    const row = clone.querySelector('.recipe-row'); // sigue funcionando, ahora es un <tr>
+
+    const select = row.querySelector('select[name="recipe_raw_material_id[]"]');
+    const input = row.querySelector('input[name="recipe_amount[]"]');
+    const uomSpan = row.querySelector('.recipe-uom');
+    
+    if (data.raw_material_id) select.value = data.raw_material_id;
+    if (data.amount != null) input.value = data.amount;
+
+    // Setea el uom inicial según lo que esté seleccionado
+    const updateUom = () => {
+        const selectedOption = select.options[select.selectedIndex];
+        uomSpan.textContent = selectedOption?.dataset.uom || '';
+    };
+    updateUom();
+
+    // Actualiza cuando el usuario cambia de materia prima
+    select.addEventListener('change', updateUom);
+
+    row.querySelector('.remove-recipe-btn').addEventListener('click', () => {
+        showAlert('Confirmar eliminación', '¿Estás seguro de que deseas eliminar este ingrediente?', 'warning').then((result) => {
+            if (result.isConfirmed) {
+                row.remove();
+            }
+        });
+    });
+
+    return row;
+}
+
+function renderRecipes(recipes = []) {
+    recipeRowsContainer.innerHTML = '';
+    console.log("Rendering recipes:", recipes);
+    recipes.forEach(r => recipeRowsContainer.appendChild(createRecipeRow(r)));
+}
+
+toggleRecipeBtn?.addEventListener('click', () => {
+    const isHidden = recipeFormSection.style.display === 'none';
+    recipeFormSection.style.display = isHidden ? 'block' : 'none';
+    toggleRecipeBtn.textContent = isHidden ? 'Ocultar receta' : 'Ver receta';
+});
+
+addRecipeBtn?.addEventListener('click', () => {
+    recipeRowsContainer.appendChild(createRecipeRow());
+});
 
 setupCrudModal(
-    document.querySelector('[data-abm="products"]'),
-    { name: 'name', category_id: 'category_id', price: 'price', bar_id: 'bar_id', recipe_raw_material_id: 'recipe_raw_material_id', recipe_amount: 'recipe_amount' },
-    "/products/create",
-    "/products/update",
-    "/products/alt_status"
-);
-
-setupCrudModal(
-    document.querySelector('[data-abm="product-categories"]'),
-    { name: 'name', sector: 'sector' },
-    "/products/categories/create",
-    "/products/categories/update",
-    "/products/categories/alt_status"
+    container,
+    {
+        name: 'name',
+        price: 'price',
+        category_id: 'category_id',
+        bar_id: 'bar_id',
+    },
+    '/products/create',
+    '/products/update',
+    '/products/toggle_status',
+    'id',
+    {
+        onFill: (dataset) => {
+            console.log("Filling form with dataset:", dataset, "and recipes:", JSON.parse(dataset.recipes || '[]'));
+            renderRecipes(JSON.parse(dataset.recipes || '[]'));
+            recipeFormSection.style.display = 'none'; // arranca cerrada, el usuario decide abrirla
+        },
+        onReset: () => {
+            renderRecipes([]);
+            recipeFormSection.style.display = 'none';
+        },
+    }
 );
 </script>
 {% endblock %}

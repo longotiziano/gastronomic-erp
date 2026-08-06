@@ -27,7 +27,7 @@ class BaseCrudService(Generic[T]):
         rows = []
         for item in items:
             if hasattr(item, "to_table_row"):
-                cells = item.to_table_row()
+                cells: list = item.to_table_row()
             else:
                 raise InternalError(f"El modelo {self.repo.model.__name__} debe implementar el método 'to_table_row()' para generar las celdas de la tabla.")
             
@@ -113,8 +113,7 @@ class BaseCrudService(Generic[T]):
         cols = ui.get("table_cols", [])
         rows = self._get_table_rows(items)
 
-        # 3. Retornar la estructura exacta que Jinja consume
-        return {
+        metadata = {
             "id": self.repo.model.__tablename__, # type: ignore
             "title": ui.get("title", self.entity_name.capitalize()),
             "cols": cols,
@@ -124,12 +123,16 @@ class BaseCrudService(Generic[T]):
             "secondary_content": not is_main,
             "pagination": pagination if pagination else None
         }
+        print(f"Table metadata: {metadata}")
+        return metadata
 
     # =========================================================
     # CRUD
     # =========================================================
 
     def filter_sort(self) -> Pagination:
+        """Processes the request arguments to extract search, filters, sorts, and pagination parameters,
+        then calls the repository's get_filtered_sorted method to retrieve the filtered and sorted results."""
         search = ""
         filters = {}
         sorts = {}
@@ -150,10 +153,10 @@ class BaseCrudService(Generic[T]):
                 sorts[field] = (value == "desc")
 
         page = request.args.get(f"{prefix}page", 1, type=int)
-        print(f"Sorts procesados: {sorts}")
         return self.repo.get_filtered_sorted(
             search=search, filters=filters, sorts=sorts, page=page
         )
+
 
     def alt_status(self, entity_id: int) -> T:
         item = self.repo.get_by_id(entity_id)

@@ -1,7 +1,7 @@
 /*
 Utiliza la libreria SweetAlert2 para mostrar alertas personalizadas con estilos adaptados a la estética del sitio.
 */
-export const showAlert = (title, text, icon) => {
+export const showAlert = (title, text, icon = 'warning') => {
     return Swal.fire({
         title: title,
         text: text,
