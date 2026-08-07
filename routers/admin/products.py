@@ -51,9 +51,9 @@ def create():
     # Campos escalares del producto
     product_data = {
         "name": form.get("name"),
-        "price": float(form.get("price")),
-        "category_id": int(form.get("category_id")),
-        "bar_id": int(form.get("bar_id")),
+        "price": form.get("price"),
+        "category_id": form.get("category_id"),
+        "bar_id": form.get("bar_id"),
     }
 
     # Campos de lista (recetas)
@@ -69,7 +69,7 @@ def create():
         if rm_id and amount
     ]
 
-    ProductService().create(**product_data, recipes=recipes)
+    product_service.create(**product_data, recipes=recipes)
     flash_message("Producto creado correctamente.", category="success")
     return redirect(url_for("products.render_products"))
 
@@ -77,7 +77,30 @@ def create():
 @products_bp.post("/products/update/<int:product_id>")
 @admin_required
 def update(product_id: int):
-    product_service.update(product_id, request.form.to_dict())
+    form = request.form
+
+    # Campos escalares del producto
+    product_data = {
+        "name": form.get("name"),
+        "price": form.get("price"),
+        "category_id": form.get("category_id"),
+        "bar_id": form.get("bar_id"),
+    }
+
+    # Campos de lista (recetas)
+    raw_material_ids = form.getlist("recipe_raw_material_id[]")
+    amounts = form.getlist("recipe_amount[]")
+
+    if len(raw_material_ids) != len(amounts):
+        raise ValueError("Datos de receta inconsistentes")
+
+    recipes = [
+        {"raw_material_id": int(rm_id), "amount": float(amount)}
+        for rm_id, amount in zip(raw_material_ids, amounts)
+        if rm_id and amount
+    ]
+
+    product_service.update(product_id, data={"product_data": product_data, "recipes": recipes})
     flash_message("Producto actualizado correctamente.", category="success")
     return redirect(url_for("products.render_products"))
 

@@ -146,6 +146,109 @@ class BaseRepository(Generic[T]):
     #  Write                                                               #
     # ------------------------------------------------------------------ #
 
+    def bulk_create(self, items: list[dict[str, Any]], model=None) -> list[T]:
+        """
+        Instantiate, persist, and return multiple records in a single transaction.
+
+        Unlike calling `create()` in a loop, this does ONE commit for all records —
+        faster (fewer round-trips) and atomic (if one fails, none are persisted).
+
+        Usage:
+            repo.bulk_create([
+                {"product_id": 1, "raw_material_id": 3, "amount": 0.18},
+                {"product_id": 1, "raw_material_id": 10, "amount": 0.05},
+            ], model=Recipe)
+
+        Raises:
+            ConflictError: if a unique/foreign key constraint is violated.
+        """
+        if model is None:
+            model = self.model
+
+        instances = [model(**item) for item in items]
+        db.session.add_all(instances)
+        try:
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            raise ConflictError("Uno o más registros ya existen o violan una restricción.") from e
+
+        for instance in instances:
+            db.session.refresh(instance)
+
+        return instances
+
+
+    def bulk_update(self, items: list[dict[str, Any]], id_key: str = "id", model=None) -> list[T]:
+        """
+        Update multiple existing records in a single transaction.
+
+        Each dict in `items` must include the record's identifier under `id_key`
+        plus the fields to update. If ANY id doesn't exist, the whole operation
+        is aborted — no records are updated.
+
+        Usage:
+            repo.bulk_update([
+                {"id": 1, "amount": 0.20},
+                {"id": 2, "amount": 0.05},
+            ], model=Recipe)
+
+        Raises:
+            ValueError: if one or more ids don't exist.
+            ConflictError: if a unique/foreign key constraint is violated.
+        """
+        if model is None:
+            model = self.model
+
+        ids = [item[id_key] for item in items]
+
+        instances = self.get_by_values(id_key, ids, model=model)
+
+        # creates a {<id>: <instance>} mapping for quick lookup
+        instances_by_id = {getattr(instance, id_key): instance for instance in instances}
+
+        for item in items:
+            instance = instances_by_id[item[id_key]]
+            for attr, value in item.items():
+                if attr == id_key:
+                    print(f"Skipping update of {id_key} for instance {instance}.")
+                    continue
+                setattr(instance, attr, value)
+
+        try:
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            raise ConflictError("Uno o más registros violan una restricción.") from e
+
+        for instance in instances:
+            db.session.refresh(instance)
+
+        return instances
+
+
+    def bulk_delete(self, model=None, commit: bool = True, **filters) -> int:
+        """
+        Bulk delete records matching the given filters. Returns the number of deleted records.
+
+        ### Commit parameter
+        The `commit` parameter controls whether to commit the transaction immediately or not, so
+        in case of multiple bulk operations, you can set commit=False and commit once at the end,
+        and rollback in case of error. If commit=False, the caller is responsible for committing 
+        or rolling back the transaction.
+        """
+
+        if model is None:
+            model = self.model
+        query = db.session.query(model)
+        for attr, value in filters.items():
+            query = query.filter(getattr(model, attr) == value)
+        deleted_count = query.delete(synchronize_session=False)
+        if commit:
+            db.session.commit()
+        return deleted_count
+
+
     def create(self, **kwargs) -> T:
         """
         Instantiate, persist, and return a new record.

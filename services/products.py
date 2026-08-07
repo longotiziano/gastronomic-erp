@@ -1,6 +1,8 @@
 from collections import defaultdict
 
 from database.repositories.products import ProductCategoryRepository, ProductRepository
+from services.recipes import RecipeService
+from validators.bulk_base import BulkValidator
 from database.models.product import ProductCategory
 from services.base_service import BaseCrudService
 from database.models.recipe import Recipe
@@ -42,9 +44,39 @@ class ProductService(BaseCrudService):
                 "amount": rec.amount,
                 "uom": rec.raw_material.uom.value,
             })
-        print(f"Recipes by product: {recipes_by_product}")
         return recipes_by_product
 
+
+    def create(self, **kwargs):
+        """Creates a product and its associated recipes. First the product, then the recipes.
+        In case of error in any recipe, the product is created but the recipes are not."""
+        recipes_data = kwargs.pop("recipes", [])
+        product = super().create(**kwargs)
+
+        if recipes_data:
+            RecipeService().bulk_create([
+                {"product_id": product.id, "raw_material_id": rec["raw_material_id"], "amount": rec["amount"]}
+                for rec in recipes_data
+            ])
+        else:
+            print(f"No recipes provided for product {product}.")
+
+        return product
+
+
+    def update(self, id: int, data: dict):
+        """Updates a product and its associated recipes. First the product, then the recipes.
+        In case of error in any recipe, the product is updated but the recipes are not."""
+        recipes_data = data.pop("recipes", [])
+        product_data = data.pop("product_data", {})
+
+        if product_data:
+            super().update(id, product_data)
+
+        if recipes_data:
+            for r in recipes_data:
+                print(r)
+            RecipeService().bulk_update(id, recipes_data)
 
     
 class ProductCategoryService(BaseCrudService):

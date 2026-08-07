@@ -123,7 +123,6 @@ class BaseCrudService(Generic[T]):
             "secondary_content": not is_main,
             "pagination": pagination if pagination else None
         }
-        print(f"Table metadata: {metadata}")
         return metadata
 
     # =========================================================
