@@ -85,5 +85,13 @@ setupCrudModal(
         },
     }
 );
+
+setupCrudModal(
+    document.querySelector('[data-abm="product_categories"]'),
+    { name: 'name', sector: 'sector' },
+    "/products/categories/create",
+    "/products/categories/update",
+    "/products/categories/alt_status"
+);
 </script>
 {% endblock %}
